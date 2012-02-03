@@ -4,6 +4,7 @@ import urllib
 import urllib2
 from MessageObject import Message
 from last_fm_wrapper import Last_fmWrapper
+import time
 
 
 def settings_load():
@@ -62,7 +63,7 @@ def nih_to_user(nih):
 
     return nih[:identind]
 
-def command_parser(message_object):
+def command_parser(message_object, core):
     payload = message_object
     if payload.msg[0] == '.np':
         last_fm = Last_fmWrapper()
@@ -70,7 +71,6 @@ def command_parser(message_object):
             last_fm_user = payload.source
         else:
             last_fm_user = payload.msg[1]
-            print last_fm_user
         now_playing = last_fm.get_now_playing(last_fm_user, 'user.getRecentTracks')
         return now_playing
     elif payload.msg[0] == '.compare':
@@ -78,8 +78,12 @@ def command_parser(message_object):
         comparison = last_fm.compare_tasteometer(payload.msg[1], payload.msg[2], 'tasteometer.compare')
         return comparison
     elif payload.msg[0] == '.exit':
-        quit_message = ' '.join(payload.msg[1:])
-        return quit_message
+        if payload.source == core.BOTOWNER:
+            quit_message = ' '.join(payload.msg[1:])
+            core.exitServer(quit_message)
+            print 'Server closed connection, exiting with message {}.'.format(quit_message)
+            time.sleep(2)
+            raise SystemExit
     else:
         pass
 

@@ -11,6 +11,7 @@ from last_fm_wrapper import Last_fmWrapper
 ## Build a list of modules that have method message_relevance()
 ## if message_relevance returns true, call the method that 
 ## is referenced
+## add flood protection
 
 class Core(object):     
 
@@ -39,7 +40,8 @@ class Core(object):
         self.sendData("PART {}".format(channel))
 
     def exitServer(self, message):
-        self.sendData("EXIT :{}".format(message))
+        self.sendData("QUIT :{}".format(message))
+        print ("QUIT :{}".format(message))
 
     def login(self):
         self.sendData("USER %s %s %s %s" % (self.BOTNICK, self.SERVER, self.SERVERNAME, self.BOTNICK))
