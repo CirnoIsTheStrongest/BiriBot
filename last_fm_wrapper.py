@@ -27,11 +27,6 @@ class Last_fmWrapper(object):
         except urllib2.HTTPError:
             return 'No user with that name was found, also urllib2 sucks.'
         verify = ElementTree.parse(response).getroot()
-        # if verify.attrib['status'] == 'failed':
-        #     print 'test'
-        #     user_exists = verify.find('error')
-        #     return user_exists.text
-        # else:
         user_active = verify.find('recenttracks')
         if int(user_active.attrib['total']) == 0:
             return 'This user has never played any songs!'
@@ -39,15 +34,13 @@ class Last_fmWrapper(object):
             track = verify.find('.//track')
             try:
                 if track.attrib['nowplaying'] == 'true':
-                    name = track.findall('name')
-                    for song in name:
-                        song_result = song.text
-                        song_result = song_result.encode('utf8')
-                    artist_text = track.findall('artist')
-                    for name in artist_text:
-                        artist = name.text
-                        artist = artist.encode('utf8')
-                    return "You are now playing -{0}- by -{1}-.".format(song_result, artist)
+                    name = track.find('name')
+                    song = name.text
+                    song = song.encode('utf8')
+                    artist_text = track.find('artist')
+                    artist = artist_text.text
+                    artist = artist.encode('utf8')
+                    return "You are now playing -{0}- by -{1}-.".format(song, artist)
             except KeyError:
                 return '''{} isn't playing anything right now.'''.format(self.last_fm_user)
     

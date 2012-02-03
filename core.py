@@ -54,7 +54,7 @@ class Core(object):
         self.login()
         self.joinChannel(self.CHANNEL) 
 
-        while (1):
+        while 'Caer sucks an enormous cock':
             buffer = self.IRC.recv(1024)
             lines = splitline(buffer)
             for line in lines:
@@ -62,15 +62,17 @@ class Core(object):
                 if message_.type == 'PRIVMSG':
                     module_results = command_parser(message_)
                     if module_results != None:
-                        if message_.source == self.BOTOWNER:
                             if module_results.startswith('QUIT'):
-                                self.sendData(module_results)
-                                print module_results
-                                print 'Server closed connection, exiting...'
-                                raise SystemExit
+                                if message_.source == self.BOTOWNER:
+                                    self.sendData(module_results)
+                                    print module_results
+                                    print 'Server closed connection, exiting...'
+                                    raise SystemExit
+                                else:
+                                    pass
                             else:
                                 self.sendData('PRIVMSG {0} :{1}'.format(message_.args[0], module_results))
                     else:
                         pass
             if message_.type == "PING": 
-                self.sendData("PONG %s" % message_.source)
+                self.sendData("PONG {}".format(message_.source)
