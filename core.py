@@ -31,6 +31,7 @@ class Core(object):
         self.BOTPASS = BOTPASS
         self.CHANNEL = CHANNEL
         self.IRC = IRC
+        self.initalization()
     def irc_conn(self):
         self.IRC.connect((SERVER, PORT))
         print "Attempting to connect to {0}({1})".format(SERVER, SERVERNAME)
@@ -54,28 +55,29 @@ class Core(object):
         self.sendData("PRIVMSG " + SendTo + " :@Help - Display this screen again") 
         self.sendData("PRIVMSG {} :@Caer - description of Caer".format(SendTo))
 
-    self.irc_conn()
-    time.sleep(1)
-    self.login()
-    self.joinChannel(CHANNEL) 
+    def initialization(self):
+        self.irc_conn()
+        self.time.sleep(1)
+        self.login()
+        self.joinChannel(CHANNEL) 
 
-    while (1):
-        buffer = self.IRC.recv(1024)
-        lines = splitline(buffer)
-        for line in lines:
-            message_ = parse(line)
-            if message_.type == 'PRIVMSG':
-                module_results = command_parser(message_)
-                if module_results != None:
-                    if message_.source == BOTOWNER:
-                        if module_results.startswith('QUIT'):
-                            self.sendData(module_results)
-                            print module_results
-                            print 'Server closed connection, exiting...'
-                            raise SystemExit
-                        else:
-                            self.sendData('PRIVMSG {0} :{1}'.format(message_.args[0], module_results))
-                else:
-                    pass
-        if message_.type == "PING": 
-            self.sendData("PONG %s" % message_.source)
+        while (1):
+            buffer = self.IRC.recv(1024)
+            lines = splitline(buffer)
+            for line in lines:
+                message_ = parse(line)
+                if message_.type == 'PRIVMSG':
+                    module_results = command_parser(message_)
+                    if module_results != None:
+                        if message_.source == BOTOWNER:
+                            if module_results.startswith('QUIT'):
+                                self.sendData(module_results)
+                                print module_results
+                                print 'Server closed connection, exiting...'
+                                raise SystemExit
+                            else:
+                                self.sendData('PRIVMSG {0} :{1}'.format(message_.args[0], module_results))
+                    else:
+                        pass
+            if message_.type == "PING": 
+                self.sendData("PONG %s" % message_.source)
