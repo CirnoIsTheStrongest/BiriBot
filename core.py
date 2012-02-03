@@ -31,7 +31,8 @@ class Core(object):
         self.BOTPASS = BOTPASS
         self.CHANNEL = CHANNEL
         self.IRC = IRC
-        self.initalization()
+        self.initialization()
+
     def irc_conn(self):
         self.IRC.connect((SERVER, PORT))
         print "Attempting to connect to {0}({1})".format(SERVER, SERVERNAME)
