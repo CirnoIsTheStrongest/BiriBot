@@ -38,6 +38,9 @@ class Core(object):
     def partChannel(self, channel):
         self.sendData("PART {}".format(channel))
 
+    def exitServer(self, message):
+        self.sendData("EXIT :{}".format(message))
+
     def login(self):
         self.sendData("USER %s %s %s %s" % (self.BOTNICK, self.SERVER, self.SERVERNAME, self.BOTNICK))
         self.sendData("NICK " + self.BOTNICK)
@@ -52,27 +55,4 @@ class Core(object):
         self.irc_conn()
         time.sleep(1)
         self.login()
-        self.joinChannel(self.CHANNEL) 
-
-        while 'Caer sucks an enormous cock':
-            buffer = self.IRC.recv(1024)
-            lines = splitline(buffer)
-            for line in lines:
-                message_ = parse(line)
-                if message_.type == 'PRIVMSG':
-                    module_results = command_parser(message_)
-                    if module_results != None:
-                            if module_results.startswith('QUIT'):
-                                if message_.source == self.BOTOWNER:
-                                    self.sendData(module_results)
-                                    print module_results
-                                    print 'Server closed connection, exiting...'
-                                    raise SystemExit
-                                else:
-                                    pass
-                            else:
-                                self.sendData('PRIVMSG {0} :{1}'.format(message_.args[0], module_results))
-                    else:
-                        pass
-            if message_.type == "PING": 
-                self.sendData("PONG {}".format(message_.source)
+        self.joinChannel(self.CHANNEL)

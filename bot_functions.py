@@ -63,18 +63,23 @@ def nih_to_user(nih):
     return nih[:identind]
 
 def command_parser(message_object):
-    message = message_object
-    if message.msg[0] == '.np':
+    payload = message_object
+    if payload.msg[0] == '.np':
         last_fm = Last_fmWrapper()
-        now_playing = last_fm.get_now_playing(message.msg[1], 'user.getRecentTracks')
+        if len(payload.msg) == 1:
+            last_fm_user = payload.source
+        else:
+            last_fm_user = payload.msg[1]
+            print last_fm_user
+        now_playing = last_fm.get_now_playing(last_fm_user, 'user.getRecentTracks')
         return now_playing
-    elif message.msg[0] == '.compare':
+    elif payload.msg[0] == '.compare':
         last_fm = Last_fmWrapper()
-        comparison = last_fm.compare_tasteometer(message.msg[1], message.msg[2], 'tasteometer.compare')
+        comparison = last_fm.compare_tasteometer(payload.msg[1], payload.msg[2], 'tasteometer.compare')
         return comparison
-    elif message.msg[0] == '.exit':
-        quit_message = ' '.join(message.msg[1:])
-        return 'QUIT :{}'.format(quit_message)
+    elif payload.msg[0] == '.exit':
+        quit_message = ' '.join(payload.msg[1:])
+        return quit_message
     else:
         pass
 
