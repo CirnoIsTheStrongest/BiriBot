@@ -1,12 +1,8 @@
 import socket
-from bot_functions import *
-import datetime
 import sys
 import os
 import platform
-import string
 import time
-from last_fm_wrapper import Last_fmWrapper
 
 ## Build a list of modules that have method message_relevance()
 ## if message_relevance returns true, call the method that 
@@ -44,7 +40,7 @@ class Core(object):
         print ("QUIT :{}".format(message))
 
     def login(self):
-        self.sendData("USER %s %s %s %s" % (self.BOTNICK, self.SERVER, self.SERVERNAME, self.BOTNICK))
+        self.sendData("USER {0} {1} {2} {3}".format(self.BOTNICK, self.SERVER, self.SERVERNAME, self.BOTNICK))
         self.sendData("NICK " + self.BOTNICK)
         if self.BOTPASS != "":
             self.sendData("PRIVMSG NickServ :ID " + self.BOTPASS + "")
@@ -57,4 +53,5 @@ class Core(object):
         self.irc_conn()
         time.sleep(1)
         self.login()
-        self.joinChannel(self.CHANNEL)
+        for channel in self.CHANNEL:
+            self.joinChannel(channel)

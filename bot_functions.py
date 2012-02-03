@@ -73,17 +73,29 @@ def command_parser(message_object, core):
             last_fm_user = payload.msg[1]
         now_playing = last_fm.get_now_playing(last_fm_user, 'user.getRecentTracks')
         return now_playing
+
     elif payload.msg[0] == '.compare':
+
         last_fm = Last_fmWrapper()
         comparison = last_fm.compare_tasteometer(payload.msg[1], payload.msg[2], 'tasteometer.compare')
         return comparison
-    elif payload.msg[0] == '.exit':
-        if payload.source == core.BOTOWNER:
-            quit_message = ' '.join(payload.msg[1:])
-            core.exitServer(quit_message)
-            print 'Server closed connection, exiting with message {}.'.format(quit_message)
-            time.sleep(2)
-            raise SystemExit
+
+    elif payload.args[0] == core.BOTNICK:
+
+        if payload.msg[0] == '.exit':
+            if payload.source == core.BOTOWNER:
+                quit_message = ' '.join(payload.msg[1:])
+                core.exitServer(quit_message)
+                print 'Server closed connection, exiting with message {}.'.format(quit_message)
+                raise SystemExit
+
+        elif payload.source == core.BOTOWNER:
+            if payload.msg[0] == '.say':
+                core.sendData("PRIVMSG {0} :{1}".format(payload.msg[1], ' '.join(payload.msg[2:])))
+        elif payload.source != core.BOTOWNER:
+            if payload.msg[0] == '.say':
+                core.sendData("PRIVMSG {} :Permission denied faggot.".format(payload.source))
+                print '{0} tried and failed to abuse me with message "{1}"!'.format(payload.source, ' '.join(payload.msg[2:]))
     else:
         pass
 
@@ -138,4 +150,3 @@ def post_counter(booru, tags):
     response = urllib2.urlopen(req)
     post_count = ElementTree.parse(response).getroot()
     return post_count.attrib['count']
-

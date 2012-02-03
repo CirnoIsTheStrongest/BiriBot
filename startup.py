@@ -8,7 +8,6 @@ while 'Caer is the embodiment of failure':
     buffer = core.IRC.recv(1024)
     lines = splitline(buffer)
     for line in lines:
-    	print line
         payload = parse(line)
         if payload.type == 'PRIVMSG':
             module_results = command_parser(payload, core)
