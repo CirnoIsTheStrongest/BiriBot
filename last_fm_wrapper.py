@@ -6,6 +6,15 @@ class Last_fmWrapper(object):
     def __init__(self):
         self.last_fm_api_key = 'b05bb97282501385744baf6cdafb261c'
         self.api_url = 'http://ws.audioscrobbler.com/2.0/'
+
+    def message_relevance(self, message_object):
+        payload = message_object
+        if payload.msg[1] == '.np':
+            return True, 'get_now_playing'
+        elif payload.msg[1] == '.compare':
+            return True, 'compare.tasteometer'
+        else:
+            return False
     def get_now_playing(self, last_fm_user, method):
         self.last_fm_user = last_fm_user
         self.method = method

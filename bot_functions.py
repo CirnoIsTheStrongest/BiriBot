@@ -72,6 +72,9 @@ def command_parser(message_object):
         last_fm = Last_fmWrapper()
         comparison = last_fm.compare_tasteometer(message.msg[1], message.msg[2], 'tasteometer.compare')
         return comparison
+    elif message.msg[0] == '.exit':
+        quit_message = ' '.join(message.msg[1:])
+        return 'QUIT :{}'.format(quit_message)
     else:
         pass
 
