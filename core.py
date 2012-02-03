@@ -21,13 +21,13 @@ class Core(object):
         self.BOTNICK = settings['BOTNICK']
         self.BOTPASS = settings['BOTPASS']
         self.BOTOWNER = settings['BOTOWNER']
-        self.CHANNEL = CHANNEL['BOTPASS']
+        self.CHANNEL = settings['CHANNEL']
         self.IRC = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._initialization()
 
     def irc_conn(self):
-        self.IRC.connect((SERVER, PORT))
-        print "Attempting to connect to {0}({1})".format(SERVER, SERVERNAME)
+        self.IRC.connect((self.SERVER, self.PORT))
+        print "Attempting to connect to {0}({1})".format(self.SERVER, self.SERVERNAME)
 
     def sendData(self, command):
         self.IRC.send(command + '\n')
@@ -40,7 +40,7 @@ class Core(object):
 
     def login(self):
         self.sendData("USER %s %s %s %s" % (self.BOTNICK, self.SERVER, self.SERVERNAME, self.BOTNICK))
-        self.sendData("NICK " + username)
+        self.sendData("NICK " + self.BOTNICK)
         if self.BOTPASS != "":
             self.sendData("PRIVMSG NickServ :ID " + self.BOTPASS + "")
             print "Logging in as {}".format(self.BOTNICK)
@@ -50,9 +50,9 @@ class Core(object):
 
     def _initialization(self):
         self.irc_conn()
-        self.time.sleep(1)
+        time.sleep(1)
         self.login()
-        self.joinChannel(CHANNEL) 
+        self.joinChannel(self.CHANNEL) 
 
         while (1):
             buffer = self.IRC.recv(1024)
@@ -62,7 +62,7 @@ class Core(object):
                 if message_.type == 'PRIVMSG':
                     module_results = command_parser(message_)
                     if module_results != None:
-                        if message_.source == BOTOWNER:
+                        if message_.source == self.BOTOWNER:
                             if module_results.startswith('QUIT'):
                                 self.sendData(module_results)
                                 print module_results
@@ -74,5 +74,3 @@ class Core(object):
                         pass
             if message_.type == "PING": 
                 self.sendData("PONG %s" % message_.source)
-
-Core()
