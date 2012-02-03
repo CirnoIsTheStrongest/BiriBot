@@ -13,25 +13,17 @@ from last_fm_wrapper import Last_fmWrapper
 ## is referenced
 
 class Core(object):     
-    settings = settings_load()
-    SERVER = settings['Server']
-    SERVERNAME = settings['ServerName']
-    PORT = settings['Port']
-    BOTNICK = settings['BotNick']
-    BOTPASS = settings['BotPass']
-    CHANNEL = settings['Channel']
-    IRC = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    def __init__(self):
-        self.settings = settings
-        self.SERVER = SERVER
-        self.SERVERNAME = SERVERNAME
-        self.PORT = PORT
-        self.BOTNICK = BOTNICK
-        self.BOTPASS = BOTPASS
-        self.CHANNEL = CHANNEL
-        self.IRC = IRC
-        self.initialization()
+    def __init__(self, settings ):
+        self.SERVER = settings['SERVER']
+        self.SERVERNAME = settings['SERVERNAME']
+        self.PORT = settings['PORT']
+        self.BOTNICK = settings['BOTNICK']
+        self.BOTPASS = settings['BOTPASS']
+        self.BOTOWNER = settings['BOTOWNER']
+        self.CHANNEL = CHANNEL['BOTPASS']
+        self.IRC = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._initialization()
 
     def irc_conn(self):
         self.IRC.connect((SERVER, PORT))
@@ -56,7 +48,7 @@ class Core(object):
         self.sendData("PRIVMSG " + SendTo + " :@Help - Display this screen again") 
         self.sendData("PRIVMSG {} :@Caer - description of Caer".format(SendTo))
 
-    def initialization(self):
+    def _initialization(self):
         self.irc_conn()
         self.time.sleep(1)
         self.login()
@@ -82,3 +74,5 @@ class Core(object):
                         pass
             if message_.type == "PING": 
                 self.sendData("PONG %s" % message_.source)
+
+Core()
