@@ -81,17 +81,22 @@ def command_parser(message_object, core):
         return comparison
 
     elif payload.args[0] == core.BOTNICK:
+        if payload.source == core.BOTOWNER:
 
-        if payload.msg[0] == '.exit':
-            if payload.source == core.BOTOWNER:
-                quit_message = ' '.join(payload.msg[1:])
-                core.exitServer(quit_message)
-                print 'Server closed connection, exiting with message {}.'.format(quit_message)
-                raise SystemExit
-
-        elif payload.source == core.BOTOWNER:
-            if payload.msg[0] == '.say':
+            if payload.msg[0] == '.exit':
+                    quit_message = ' '.join(payload.msg[1:])
+                    core.exitServer(quit_message)
+                    print 'Server closed connection, exiting with message {}.'.format(quit_message)
+                    raise SystemExit
+            elif payload.msg[0] == '.say':
                 core.sendData("PRIVMSG {0} :{1}".format(payload.msg[1], ' '.join(payload.msg[2:])))
+            
+            elif payload.msg[0] == '.join':
+                core.joinChannel(payload.msg[1])
+
+            elif payload.msg[0] == '.part':
+                core.partChannel(payload.msg[1])
+
         elif payload.source != core.BOTOWNER:
             if payload.msg[0] == '.say':
                 core.sendData("PRIVMSG {} :Permission denied faggot.".format(payload.source))
