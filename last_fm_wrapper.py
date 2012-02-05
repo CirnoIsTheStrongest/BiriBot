@@ -17,6 +17,12 @@ class Last_fmWrapper(object):
             return False
     def get_now_playing(self, last_fm_user, method):
         self.last_fm_user = last_fm_user
+        stiver_list = ['stief', 'steif']
+        if self.last_fm_user == 'BiriBiri':
+            self.last_fm_user = 'BiriBiriRG'
+        elif self.last_fm_user.lower() in stiver_list:
+            self.last_fm_user = 'dstiver'
+
         self.method = method
         parameters = {'user':self.last_fm_user, 'api_key':self.last_fm_api_key, 'method':self.method}
         encoded_parameters = urllib.urlencode(parameters)
@@ -29,7 +35,7 @@ class Last_fmWrapper(object):
         verify = ElementTree.parse(response).getroot()
         user_active = verify.find('recenttracks')
         if int(user_active.attrib['total']) == 0:
-            return 'This user has never played any songs!'
+            return '{} has never played any songs!'.format(self.last_fm_user)
         else:
             track = verify.find('.//track')
             try:
@@ -40,7 +46,7 @@ class Last_fmWrapper(object):
                     artist_text = track.find('artist')
                     artist = artist_text.text
                     artist = artist.encode('utf8')
-                    return "You are now playing -{0}- by -{1}-.".format(song, artist)
+                    return "{0} now playing -{1}- by -{2}-.".format(self.last_fm_user, song, artist)
             except KeyError:
                 return '''{} isn't playing anything right now.'''.format(self.last_fm_user)
     

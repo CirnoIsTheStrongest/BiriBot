@@ -12,7 +12,7 @@ import time
 ## make event handler
 
 class Core(object):
-    ''' Core class, connects to server and sends/receives data.'''
+    ''' Core class, connects to server.'''
 
     def __init__(self, settings ):
         self.SERVER = settings['SERVER']
