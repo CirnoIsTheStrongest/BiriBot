@@ -75,16 +75,32 @@ def command_parser(message_object, core):
         return now_playing
 
     elif message.msg[0] == '.compare':
-
         last_fm = Last_fmWrapper()
-        comparison = last_fm.compare_tasteometer(message.msg[1], message.msg[2], 'tasteometer.compare')
+        try:
+            if len(message.msg) == 2:
+                last_fm_user_1 = message.source
+                last_fm_user_2 = message.msg[1]
+            else:
+                last_fm_user_1 = message.msg[1]
+                last_fm_user_2 = message.msg[2]
+        except IndexError:
+            core.write("PRIVMSG {} :Not enough arguments!".format(message.args[0]))
+            return
+        
+        if last_fm_user_1 == last_fm_user_2:
+            core.write("PRIVMSG {} :You really shouln't try to compare yourself to yourself, it isn't nice.".format(message.args[0]))
+            return
+
+        comparison = last_fm.compare_tasteometer(last_fm_user_1, last_fm_user_2, 'tasteometer.compare')
         return comparison
 
+    elif message.msg[0] == '.stats':
+        stats = 'Channel stats available here: http://goo.gl/w6K6L'
+        return stats
     elif message.args[0] == core.botnick:
         if message.source == core.botowner:
             if message.msg[0] == '.exit':
                     core.disconnect
-                    print 'Server closed connection, exiting with message {}.'.format(quit_message)
                     raise SystemExit
             elif message.msg[0] == '.say':
                 core.write("PRIVMSG {0} :{1}".format(message.msg[1], ' '.join(message.msg[2:])))

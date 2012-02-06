@@ -7,22 +7,27 @@ class Last_fmWrapper(object):
         self.last_fm_api_key = 'b05bb97282501385744baf6cdafb261c'
         self.api_url = 'http://ws.audioscrobbler.com/2.0/'
 
-    def message_relevance(self, message_object):
-        payload = message_object
-        if payload.msg[1] == '.np':
-            return True, 'get_now_playing'
-        elif payload.msg[1] == '.compare':
-            return True, 'compare.tasteometer'
-        else:
-            return False
-    def get_now_playing(self, last_fm_user, method):
+    def nick_alias(self, last_fm_user):
         self.last_fm_user = last_fm_user
+        print self.last_fm_user
         stiver_list = ['stief', 'steif']
-        if self.last_fm_user == 'BiriBiri':
-            self.last_fm_user = 'BiriBiriRG'
-        elif self.last_fm_user.lower() in stiver_list:
+        touma_list = ['[kuroi]', 'touma']
+        reise_list = ['ojou-sama', 'reise', 'rapist', 'tomoyo']
+        biri_list = ['cirno', 'biribiri', 'railgun', 'ranka-chan']
+        if self.last_fm_user.lower() in stiver_list:
             self.last_fm_user = 'dstiver'
+        elif self.last_fm_user.lower() in touma_list:
+            self.last_fm_user = 'Kosyne'
+        elif self.last_fm_user.lower() in reise_list:
+            self.last_fm_user = 'Wintereise'
+        elif self.last_fm_user.lower() in biri_list:
+            self.last_fm_user = 'BiriBiriRG'
+        elif self.last_fm_user.lower() == 'jordanmkasla2009':
+            self.last_fm_user = 'jordanmkasla209'
+        return self.last_fm_user
 
+    def get_now_playing(self, last_fm_user, method):
+        last_fm_user = self.nick_alias(last_fm_user)
         self.method = method
         parameters = {'user':self.last_fm_user, 'api_key':self.last_fm_api_key, 'method':self.method}
         encoded_parameters = urllib.urlencode(parameters)
@@ -52,12 +57,15 @@ class Last_fmWrapper(object):
     
     def compare_tasteometer(self, user1, user2, method):
         self.method = method
-        self.user1 = user1
+        self.user1 = self.nick_alias(user1)
         self.user2 = user2
         parameters = {'type1':'user', 'type2':'user', 'value1':self.user1, 'value2':self.user2, 'api_key':self.last_fm_api_key, 'method':self.method}
         encoded_parameters = urllib.urlencode(parameters)
         request = urllib2.Request(self.api_url, encoded_parameters)
-        response = urllib2.urlopen(request)
+        try:
+            response = urllib2.urlopen(request)
+        except urllib2.HTTPError:
+            return 'One of those users does not exist. Also, urllib2 sucks.'
         root = ElementTree.parse(response).getroot()
         compare = root.find('comparison')
         result = compare.find('result')
