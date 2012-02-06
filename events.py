@@ -1,4 +1,4 @@
-class Message:
+class MessageObj:
     source = None
     type = None
     args = None

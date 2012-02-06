@@ -80,8 +80,8 @@ def command_parser(message_object, core):
         comparison = last_fm.compare_tasteometer(payload.msg[1], payload.msg[2], 'tasteometer.compare')
         return comparison
 
-    elif payload.args[0] == core.BOTNICK:
-        if payload.source == core.BOTOWNER:
+    elif payload.args[0] == core.botnick:
+        if payload.source == core.botowner:
 
             if payload.msg[0] == '.exit':
                     quit_message = ' '.join(payload.msg[1:])
@@ -97,61 +97,9 @@ def command_parser(message_object, core):
             elif payload.msg[0] == '.part':
                 core.partChannel(payload.msg[1])
 
-        elif payload.source != core.BOTOWNER:
+        elif payload.source != core.botowner:
             if payload.msg[0] == '.say':
                 core.sendData("PRIVMSG {} :Permission denied faggot.".format(payload.source))
                 print '{0} tried and failed to abuse me with message "{1}"!'.format(payload.source, ' '.join(payload.msg[2:]))
     else:
         pass
-
-def booru_chooser():
-    boorus = {
-        'konachan': 'http://konachan.com/post/index.xml', 
-        'oreno': 'http://oreno.imouto.org/post/index.xml', 
-        'danbooru': 'http://danbooru.donmai.us/post/index.xml',
-        'nekobooru': 'http://nekobooru.net/post/index.xml',
-        'gelbooru': 'http://gelbooru.com/index.php',
-        '3dbooru': 'http://behoimi.org/post/index.xml',
-            }
-    return boorus
-
-def post_counter(booru, tags):
-
-    boorus = booru_chooser()
-    boorus['sankaku'] = 'http://chan.sankakucomplex.com/post/index.xml'
-    try:
-        url = boorus[booru.lower()]
-    except KeyError:
-        print 'Booru doesn\'t exist!'
-    if url == 'http://gelbooru.com/index.php':
-        page = 'pid'
-        data = {
-            'page': 'dapi',
-            's': 'post',
-            'q': 'index',
-            'tags':tags,
-            'limit': 1,
-            'pid': 1,
-        }
-    elif boorus['danbooru']:
-        page = 'page'
-        data = {
-            'tags':tags, 
-            'limit':1, 
-            'page': 1,
-            'login':'BiriBiriRG',
-            'password_hash':'58eaf30d591d86f6ea62f4a62a5b332e77af8732',
-        }        
-    else:
-        page = 'page'
-        data = {
-            'tags':self.tags, 
-            'limit':1, 
-            'page': 1,
-        }
-
-    request_data = urllib.urlencode(data)
-    req = urllib2.Request('?'.join([url, request_data]))
-    response = urllib2.urlopen(req)
-    post_count = ElementTree.parse(response).getroot()
-    return post_count.attrib['count']

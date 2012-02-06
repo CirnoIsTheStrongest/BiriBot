@@ -1,22 +1,22 @@
-from core import Core
-from bot_functions import *
+from core import Connection
+from parse import *
 import time
 settings = settings_load()
-core = Core(settings)
+core = Connection(settings)
 
 while 'Caer is the embodiment of failure':
-    buffer = core.IRC.recv(1024)
+    buffer = core.sock.recv(4096)
     lines = splitline(buffer)
     for line in lines:
         payload = parse(line)
         if payload.type == "NOTICE":
-            if core.LoggedIn == False:
+            if core.logged_in == False:
                 if payload.source == "NickServ":
                     print 'Logging in...'
-                    core.Identify()
-                    core.LoggedIn = True
+                    core.identify()
+                    core.logged_in = True
                     time.sleep(2)
-                    for channel in core.CHANNEL:
+                    for channel in core.channel:
                         core.joinChannel(channel)
         if payload.type == "PRIVMSG":
             module_results = command_parser(payload, core)
