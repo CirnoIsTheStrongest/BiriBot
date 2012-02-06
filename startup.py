@@ -8,21 +8,21 @@ while 'Caer is the embodiment of failure':
     buffer = core.sock.recv(4096)
     lines = splitline(buffer)
     for line in lines:
-        payload = parse(line)
-        if payload.type == "NOTICE":
+        message = parse(line)
+        if message.type == "NOTICE":
             if core.logged_in == False:
-                if payload.source == "NickServ":
+                if message.source == "NickServ":
                     print 'Logging in...'
                     core.identify()
                     core.logged_in = True
                     time.sleep(2)
                     for channel in core.channel:
-                        core.joinChannel(channel)
-        if payload.type == "PRIVMSG":
-            module_results = command_parser(payload, core)
+                        core.join_channel(channel)
+        if message.type == "PRIVMSG":
+            module_results = command_parser(message, core)
             if module_results != None:
-                core.sendData('PRIVMSG {0} :{1}'.format(payload.args[0], module_results))
+                core.write('PRIVMSG {0} :{1}'.format(message.args[0], module_results))
             else:
                 pass
-    if payload.type == "PING":
-        core.sendData("PONG {}".format(payload.source))
+    if message.type == "PING":
+        core.write("PONG {}".format(message.source))

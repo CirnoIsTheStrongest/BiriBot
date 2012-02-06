@@ -67,37 +67,46 @@ class Connection(object):
             return True
 
 
-    def sendData(self, command):
-        self.sock.send(command + '\n')
+    def write(self, data):
+        ''' writes to a connected socket ''' 
 
-    def joinChannel(self, channel):
-        self.sendData("JOIN {}".format(channel))
+        self.sock.send(data + "\r\n")
 
-    def partChannel(self, channel):
-        self.sendData("PART {}".format(channel))
+    def join_channel(self, channel):
+        ''' joins a channel on the server '''
+
+        self.write("JOIN {}".format(channel))
+
+    def part_channel(self, channel):
+        ''' parts a channel on the server ''' 
+
+        self.write("PART {}".format(channel))
+
+    def send_notice(self, target, message):
+        ''' used to send notices '''
 
 
-
-    def sendNotice(self, target, message):
-        self.sendData('NOTICE {0} :{1}'.format(target, message))
+        self.write('NOTICE {0} :{1}'.format(target, message))
 
     def registration(self):
         ''' Sends user registration information to server.'''
 
         # sends USER command with arguments USERNAME,SERVER,SERVERNAME,REALNAME
-        self.sendData("USER {0} {1} {2} {3}".format(self.botnick, self.server, self.servername, self.botnick))
+        self.write("USER {0} {1} {2} {3}".format(self.botnick, self.server, self.servername, self.botnick))
 
         # sends NICK command with argument NICKNAME
-        self.sendData("NICK {}".format(self.botnick))
+        self.write("NICK {}".format(self.botnick))
 
     def identify(self):
+        ''' identifies with nickserv '''
+
         if self.botpass != "":
-            # if botpass isn't empty, identifies with nickserv using self.BOTPASS
-            self.sendData("PRIVMSG NickServ :ID {}".format(self.botpass))
-    def commands(self, SendTo):
-        pass
+        # if botpass isn't empty, identifies with nickserv using self.BOTPASS
+            self.write("PRIVMSG NickServ :ID {}".format(self.botpass))
+
     def _initialization(self):
         ''' Initializes connection, logs in and joins channels.'''
+        # to be removed and added elsewhere later
 
         self.connect()
         self.registration()

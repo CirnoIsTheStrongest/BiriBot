@@ -36,22 +36,22 @@ def parse(line):
     # arguments (such as #channel)
     args = []
     # the actual "message" (such as "Hello" in a PRIVMSG)
-    payload = ''
+    message = ''
 
     # Loop through the remaining splits and add them to the proper place
     while len(parts) > 0:
         # If we encounter a : we have hit the "message" part
         if parts[0].startswith(':'):
             # Add it to the variable and jump out of the loop
-            payload = ' '.join(parts)[1:]
+            message = ' '.join(parts)[1:]
             break
         else:
             # Everything else will be treated as arguments to the COMMAND
             args.append(parts.pop(0))
 
     # Return the message object
-    payload = payload.split(' ')
-    return Message(nih_to_user(source), command, args, payload)
+    message = message.split(' ')
+    return Message(nih_to_user(source), command, args, message)
 
 def nih_to_user(nih):
     """ Converts a standard Nick!Ident@Host to an User object """
@@ -64,42 +64,40 @@ def nih_to_user(nih):
     return nih[:identind]
 
 def command_parser(message_object, core):
-    payload = message_object
-    if payload.msg[0] == '.np':
+    message = message_object
+    if message.msg[0] == '.np':
         last_fm = Last_fmWrapper()
-        if len(payload.msg) == 1:
-            last_fm_user = payload.source
+        if len(message.msg) == 1:
+            last_fm_user = message.source
         else:
-            last_fm_user = payload.msg[1]
+            last_fm_user = message.msg[1]
         now_playing = last_fm.get_now_playing(last_fm_user, 'user.getRecentTracks')
         return now_playing
 
-    elif payload.msg[0] == '.compare':
+    elif message.msg[0] == '.compare':
 
         last_fm = Last_fmWrapper()
-        comparison = last_fm.compare_tasteometer(payload.msg[1], payload.msg[2], 'tasteometer.compare')
+        comparison = last_fm.compare_tasteometer(message.msg[1], message.msg[2], 'tasteometer.compare')
         return comparison
 
-    elif payload.args[0] == core.botnick:
-        if payload.source == core.botowner:
-
-            if payload.msg[0] == '.exit':
-                    quit_message = ' '.join(payload.msg[1:])
-                    core.exitServer(quit_message)
+    elif message.args[0] == core.botnick:
+        if message.source == core.botowner:
+            if message.msg[0] == '.exit':
+                    core.disconnect
                     print 'Server closed connection, exiting with message {}.'.format(quit_message)
                     raise SystemExit
-            elif payload.msg[0] == '.say':
-                core.sendData("PRIVMSG {0} :{1}".format(payload.msg[1], ' '.join(payload.msg[2:])))
+            elif message.msg[0] == '.say':
+                core.write("PRIVMSG {0} :{1}".format(message.msg[1], ' '.join(message.msg[2:])))
             
-            elif payload.msg[0] == '.join':
-                core.joinChannel(payload.msg[1])
+            elif message.msg[0] == '.join':
+                core.join_channel(message.msg[1])
 
-            elif payload.msg[0] == '.part':
-                core.partChannel(payload.msg[1])
+            elif message.msg[0] == '.part':
+                core.part_channel(message.msg[1])
 
-        elif payload.source != core.botowner:
-            if payload.msg[0] == '.say':
-                core.sendData("PRIVMSG {} :Permission denied faggot.".format(payload.source))
-                print '{0} tried and failed to abuse me with message "{1}"!'.format(payload.source, ' '.join(payload.msg[2:]))
+        elif message.source != core.botowner:
+            if message.msg[0] == '.say':
+                core.write("PRIVMSG {} :Permission denied faggot.".format(message.source))
+                print '{0} tried and failed to abuse me with message "{1}"!'.format(message.source, ' '.join(message.msg[2:]))
     else:
         pass
