@@ -8,13 +8,16 @@ class Last_fmWrapper(object):
     def __init__(self, last_fm_user):
         self.last_fm_api_key = 'b05bb97282501385744baf6cdafb261c'
         self.api_url = 'http://ws.audioscrobbler.com/2.0/'
-        self.last_fm_user = last_fm_user
         if type(last_fm_user) is tuple:
             self.user1, self.user2 = last_fm_user
+            ## nicknames with whitespace after break at this point
+            print '{0}klsdfdslkfdfdsfsdf{1}'.format(self.user1, self.user2)
             self.user1 = self.nick_alias(self.user1)
             self.user2 = self.nick_alias(self.user2)
+            self.user1 = self.user1.lower().strip()
+            self.user2 = self.user2.lower().strip()
         else:
-            self.last_fm_user = self.nick_alias(self.last_fm_user)
+            self.last_fm_user = self.nick_alias(last_fm_user.lower().strip())
 
 
     def nick_alias(self, last_fm_user):
@@ -22,18 +25,19 @@ class Last_fmWrapper(object):
         touma_list = ['[kuroi]', 'touma']
         reise_list = ['ojou-sama', 'reise', 'rapist', 'tomoyo']
         biri_list = ['cirno', 'biribiri', 'railgun', 'ranka-chan']
-        if last_fm_user.lower() in stiver_list:
+        if last_fm_user in stiver_list:
             last_fm_user = 'dstiver'
-        elif last_fm_user.lower() in touma_list:
+        elif last_fm_user in touma_list:
             last_fm_user = 'Kosyne'
-        elif last_fm_user.lower() in reise_list:
+        elif last_fm_user in reise_list:
             last_fm_user = 'Wintereise'
-        elif last_fm_user.lower() in biri_list:
+        elif last_fm_user in biri_list:
             last_fm_user = 'BiriBiriRG'
-        elif last_fm_user.lower() == 'jordanmkasla2009':
+        elif last_fm_user == 'jordanmkasla2009':
             last_fm_user = 'jordanmkasla209'
-        elif last_fm_user.lower() == 'lavo':
+        elif last_fm_user == 'lavo':
             last_fm_user = 'lavo_2'
+            print last_fm_user
         return last_fm_user
 
     def get_now_playing(self, method):
