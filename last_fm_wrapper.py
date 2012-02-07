@@ -2,7 +2,6 @@ from xml.etree import ElementTree
 import urllib
 import urllib2
 import json
-from parse import *
 
 class Last_fmWrapper(object):
     def __init__(self, last_fm_user):
@@ -10,13 +9,13 @@ class Last_fmWrapper(object):
         self.api_url = 'http://ws.audioscrobbler.com/2.0/'
         self.last_fm_user = last_fm_user
 
-def open_user_database(self):
-    with open('users.json', 'rb') as f:
-        return json.load(f, encoding='utf-8')
+    def open_user_database(self):
+        with open('users.json', 'rb') as f:
+            return json.load(f, encoding='utf-8')
 
-def save_user_database(self, user_dict):
-    with open('users.json', 'wb') as f:
-        json.dump(user_dict, f, encoding='utf-8')
+    def save_user_database(self, user_dict):
+        with open('users.json', 'wb') as f:
+            json.dump(user_dict, f, encoding='utf-8')
 
     def user_parsing(self, last_fm_user):
         if type(last_fm_user) is tuple:
@@ -95,17 +94,24 @@ def save_user_database(self, user_dict):
         score = result.find('score')
         comparison = round((float(score.text)*100), 2)
         return '{0} and {1} have a compatibility rating of {2}%'.format(self.user1, self.user2, comparison)
+
+    def register_user(self, source_, user_):
+        user = user_
+        source = source_
         
-    def register_user(self, source, user):
         try:
             users = self.open_user_database()
         except IOError:
             users = {}
-        
-        if user in users[source]:
-            return '{0} is already aliased to {1].'.format(source, user)
-        else:
-            user[source].append(user)
+        try:
+            if user in users[user]:
+                return '{0} is already aliased to {1].'.format(user, source)
+        except KeyError:
+            try:
+                users[user] = users[user].append(source)
+            except KeyError:
+                users[user] = [source]
         # TODO do stuff here to build dict
+        print users
         if users != None:
             self.save_user_database(users)
