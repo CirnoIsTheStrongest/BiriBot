@@ -11,6 +11,13 @@ def settings_load():
     with open('settings.json', 'rb') as f:
         return json.load(f, encoding='utf-8')
 
+def open_user_database():
+    with open('users.json', 'rb') as f:
+        return json.load(f, encoding='utf-8')
+
+def save_user_database(user_dict):
+    with open('users.json', 'wb') as f:
+        json.dump(user_dict, f, encoding='utf-8')
 
 def splitline(data):
     """ Splits the lines we got back and fixes any cut-off messages """
@@ -66,16 +73,15 @@ def nih_to_user(nih):
 def command_parser(message_object, core):
     message = message_object
     if message.msg[0] == '.np':
-        last_fm = Last_fmWrapper()
         if len(message.msg) == 1:
             last_fm_user = message.source
         else:
             last_fm_user = message.msg[1]
-        now_playing = last_fm.get_now_playing(last_fm_user, 'user.getRecentTracks')
+        last_fm = Last_fmWrapper(last_fm_user)
+        now_playing = last_fm.get_now_playing('user.getRecentTracks')
         return now_playing
 
     elif message.msg[0] == '.compare':
-        last_fm = Last_fmWrapper()
         try:
             if len(message.msg) == 2:
                 last_fm_user_1 = message.source
@@ -86,12 +92,12 @@ def command_parser(message_object, core):
         except IndexError:
             core.write("PRIVMSG {} :Not enough arguments!".format(message.args[0]))
             return
-        
         if last_fm_user_1 == last_fm_user_2:
             core.write("PRIVMSG {} :You really shouln't try to compare yourself to yourself, it isn't nice.".format(message.args[0]))
             return
-
-        comparison = last_fm.compare_tasteometer(last_fm_user_1, last_fm_user_2, 'tasteometer.compare')
+        last_fm_users = (last_fm_user_1, last_fm_user_2)
+        last_fm = Last_fmWrapper(last_fm_users)
+        comparison = last_fm.compare_tasteometer('tasteometer.compare')
         return comparison
 
     elif message.msg[0] == '.stats':

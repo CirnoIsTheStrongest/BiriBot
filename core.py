@@ -4,12 +4,12 @@ import os
 import platform
 import time
 
-## Build a list of modules that have method message_relevance()
-## if message_relevance returns true, call the method that 
+## TODO Build a list of modules that have method message_relevance()
+## TODO if message_relevance returns true, call the method that 
 ## is referenced
-## add flood protection
-## verify login before joining channels
-## make event handler
+## TODO add flood protection
+## TODO verify login before joining channels
+## TODO make event handler
 
 class Connection(object):
     ''' Core class, connects to server.'''
