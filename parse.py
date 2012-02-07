@@ -94,7 +94,7 @@ def command_parser(message_object, core):
             return comparison
     
     elif message.msg[0] == '.alias':
-        last_fm = Last_fmWrapper('None')
+        last_fm = Last_fmWrapper(None)
         user = message.msg[1]
         source = message.source
         last_fm.register_user(source, user)
