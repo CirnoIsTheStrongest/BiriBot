@@ -8,17 +8,27 @@ class Last_fmWrapper(object):
     def __init__(self, last_fm_user):
         self.last_fm_api_key = 'b05bb97282501385744baf6cdafb261c'
         self.api_url = 'http://ws.audioscrobbler.com/2.0/'
+        self.last_fm_user = last_fm_user
+
+def open_user_database(self):
+    with open('users.json', 'rb') as f:
+        return json.load(f, encoding='utf-8')
+
+def save_user_database(self, user_dict):
+    with open('users.json', 'wb') as f:
+        json.dump(user_dict, f, encoding='utf-8')
+
+    def user_parsing(self, last_fm_user):
         if type(last_fm_user) is tuple:
-            self.user1, self.user2 = last_fm_user
+            user1, user2 = last_fm_user
             ## nicknames with whitespace after break at this point
-            print '{0}klsdfdslkfdfdsfsdf{1}'.format(self.user1, self.user2)
-            self.user1 = self.nick_alias(self.user1)
-            self.user2 = self.nick_alias(self.user2)
-            self.user1 = self.user1.lower().strip()
-            self.user2 = self.user2.lower().strip()
+            print '{0}klsdfdslkfdfdsfsdf{1}'.format(user1, user2)
+            user1 = self.nick_alias(user1.lower())
+            user2 = self.nick_alias(user2.lower())
+            return user1, user2
         else:
             self.last_fm_user = self.nick_alias(last_fm_user.lower().strip())
-
+            return self.last_fm_user
 
     def nick_alias(self, last_fm_user):
         stiver_list = ['stief', 'steif']
@@ -41,6 +51,7 @@ class Last_fmWrapper(object):
         return last_fm_user
 
     def get_now_playing(self, method):
+        last_fm_user = self.user_parsing(self.last_fm_user)
         self.method = method
         parameters = {'user':self.last_fm_user, 'api_key':self.last_fm_api_key, 'method':self.method}
         encoded_parameters = urllib.urlencode(parameters)
@@ -69,6 +80,7 @@ class Last_fmWrapper(object):
                 return '''{} isn't playing anything right now.'''.format(self.last_fm_user)
     
     def compare_tasteometer(self, method):
+        self.user1, self.user2 = self.user_parsing(self.last_fm_user)
         self.method = method
         parameters = {'type1':'user', 'type2':'user', 'value1':self.user1, 'value2':self.user2, 'api_key':self.last_fm_api_key, 'method':self.method}
         encoded_parameters = urllib.urlencode(parameters)
@@ -83,12 +95,17 @@ class Last_fmWrapper(object):
         score = result.find('score')
         comparison = round((float(score.text)*100), 2)
         return '{0} and {1} have a compatibility rating of {2}%'.format(self.user1, self.user2, comparison)
-    def register_user(self):
+        
+    def register_user(self, source, user):
         try:
-            users = open_user_database()
+            users = self.open_user_database()
         except IOError:
             users = {}
         
+        if user in users[source]:
+            return '{0} is already aliased to {1].'.format(source, user)
+        else:
+            user[source].append(user)
         # TODO do stuff here to build dict
-
-        save_user_database(users)
+        if users != None:
+            self.save_user_database(users)

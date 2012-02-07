@@ -11,14 +11,6 @@ def settings_load():
     with open('settings.json', 'rb') as f:
         return json.load(f, encoding='utf-8')
 
-def open_user_database():
-    with open('users.json', 'rb') as f:
-        return json.load(f, encoding='utf-8')
-
-def save_user_database(user_dict):
-    with open('users.json', 'wb') as f:
-        json.dump(user_dict, f, encoding='utf-8')
-
 def splitline(data):
     """ Splits the lines we got back and fixes any cut-off messages """
     lines = data.split("\r\n")
@@ -95,10 +87,18 @@ def command_parser(message_object, core):
         if last_fm_user_1 == last_fm_user_2:
             core.write("PRIVMSG {} :You really shouln't try to compare yourself to yourself, it isn't nice.".format(message.args[0]))
             return
-        last_fm_users = (last_fm_user_1, last_fm_user_2)
-        last_fm = Last_fmWrapper(last_fm_users)
-        comparison = last_fm.compare_tasteometer('tasteometer.compare')
-        return comparison
+        else:
+            last_fm_users = (last_fm_user_1, last_fm_user_2)
+            last_fm = Last_fmWrapper(last_fm_users)
+            comparison = last_fm.compare_tasteometer('tasteometer.compare')
+            return comparison
+    
+    elif message.msg[0] == '.alias':
+        last_fm = Last_fmWrapper('None')
+        user = message.msg[1]
+        source = message.source
+        last_fm.register_user(source, user)
+        return '{0} was registered to {1}.'.format(user, source)
 
     elif message.msg[0] == '.stats':
         stats = 'Channel stats available here: http://goo.gl/w6K6L'
