@@ -2,7 +2,7 @@ import json
 from xml.etree import ElementTree
 import urllib
 import urllib2
-from MessageObject import Message
+from events import MessageObj as Message
 from last_fm_wrapper import Last_fmWrapper
 import time
 

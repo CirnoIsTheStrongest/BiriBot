@@ -12,12 +12,22 @@ while 'Caer is the embodiment of failure':
         if message.type == "NOTICE":
             if core.logged_in == False:
                 if message.source == "NickServ":
-                    print 'Logging in...'
-                    core.identify()
-                    core.logged_in = True
-                    time.sleep(2)
-                    for channel in core.channel:
-                        core.join_channel(channel)
+                    if core.botpass != '':
+                        print 'Logging in...'
+                        login = core.identify()
+
+                        if login == True:
+                            core.logged_in = True
+                            print 'Login successful!'
+                        elif login == False:
+                            print 'Login failed, check your password and try again.'
+                            raise SystemExit
+                        time.sleep(2)
+                        for channel in core.channel:
+                            core.join_channel(channel)
+                for channel in core.channel:
+                    core.join_channel(channel)
+                    core.logged_in == True
         if message.type == "PRIVMSG":
             module_results = command_parser(message, core)
             if module_results != None:

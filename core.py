@@ -103,6 +103,9 @@ class Connection(object):
         if self.botpass != "":
         # if botpass isn't empty, identifies with nickserv using self.BOTPASS
             self.write("PRIVMSG NickServ :ID {}".format(self.botpass))
+            return True
+
+
 
     def _initialization(self):
         ''' Initializes connection, logs in and joins channels.'''
