@@ -21,33 +21,20 @@ class Last_fmWrapper(object):
         if type(last_fm_user) is tuple:
             user1, user2 = last_fm_user
             ## nicknames with whitespace after break at this point
-            print '{0}klsdfdslkfdfdsfsdf{1}'.format(user1, user2)
-            user1 = self.nick_alias(user1.lower())
-            user2 = self.nick_alias(user2.lower())
+            # print '{0}klsdfdslkfdfdsfsdf{1}'.format(user1, user2)
+            user1 = self.nick_alias(user1)
+            user2 = self.nick_alias(user2)
             return user1, user2
         else:
-            self.last_fm_user = self.nick_alias(last_fm_user.lower().strip())
+            self.last_fm_user = self.nick_alias(last_fm_user)
             return self.last_fm_user
 
     def nick_alias(self, last_fm_user):
-        stiver_list = ['stief', 'steif']
-        touma_list = ['[kuroi]', 'touma']
-        reise_list = ['ojou-sama', 'reise', 'rapist', 'tomoyo']
-        biri_list = ['cirno', 'biribiri', 'railgun', 'ranka-chan']
-        if last_fm_user in stiver_list:
-            last_fm_user = 'dstiver'
-        elif last_fm_user in touma_list:
-            last_fm_user = 'Kosyne'
-        elif last_fm_user in reise_list:
-            last_fm_user = 'Wintereise'
-        elif last_fm_user in biri_list:
-            last_fm_user = 'BiriBiriRG'
-        elif last_fm_user == 'jordanmkasla2009':
-            last_fm_user = 'jordanmkasla209'
-        elif last_fm_user == 'lavo':
-            last_fm_user = 'lavo_2'
-            print last_fm_user
-        return last_fm_user
+        users = self.open_user_database()
+        for key in users:
+            if last_fm_user.lower() in users[key]:
+                last_fm_user = key
+                return last_fm_user
 
     def get_now_playing(self, method):
         last_fm_user = self.user_parsing(self.last_fm_user)
@@ -74,7 +61,8 @@ class Last_fmWrapper(object):
                     artist_text = track.find('artist')
                     artist = artist_text.text
                     artist = artist.encode('utf8')
-                    return "{0} now playing -{1}- by -{2}-.".format(self.last_fm_user, song, artist)
+                    return '8:: {0}8:: Now Playing -  {1} - {2} 8::'.format(self.last_fm_user, song, artist)
+                    # return "{0} now playing -{1}- by -{2}-.".format(self.last_fm_user, song, artist)
             except KeyError:
                 return '''{} isn't playing anything right now.'''.format(self.last_fm_user)
     
@@ -96,7 +84,7 @@ class Last_fmWrapper(object):
         return '{0} and {1} have a compatibility rating of {2}%'.format(self.user1, self.user2, comparison)
 
     def register_user(self, source_, user_):
-        user = user_
+        user = unicode(user_)
         source = source_
         
         try:
@@ -104,14 +92,15 @@ class Last_fmWrapper(object):
         except IOError:
             users = {}
         try:
-            if user in users[user]:
-                return '{0} is already aliased to {1].'.format(user, source)
+            user_list = users[user]
+            if source.lower() in user_list:
+                return '{0} is already aliased to {1}.'.format(user, source)
+            else:
+                users[user].append(source.lower())
+                self.save_user_database(users)
+                return 'Successfully aliased {0} to {1}.'.format(user, source)
         except KeyError:
-            try:
-                users[user] = users[user].append(source)
-            except KeyError:
-                users[user] = [source]
-        # TODO do stuff here to build dict
-        print users
-        if users != None:
-            self.save_user_database(users)
+            users[user] = [source.lower()]
+            if users != None:
+                self.save_user_database(users)
+                return 'Added {0} with alias {1}.'.format(user, source)

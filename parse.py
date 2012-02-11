@@ -97,8 +97,8 @@ def command_parser(message_object, core):
         last_fm = Last_fmWrapper(None)
         user = message.msg[1]
         source = message.source
-        last_fm.register_user(source, user)
-        return '{0} was registered to {1}.'.format(user, source)
+        results = last_fm.register_user(source, user)
+        return results
 
     elif message.msg[0] == '.stats':
         stats = 'Channel stats available here: http://goo.gl/w6K6L'
