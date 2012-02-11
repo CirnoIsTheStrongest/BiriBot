@@ -21,7 +21,6 @@ class Last_fmWrapper(object):
         if type(last_fm_user) is tuple:
             user1, user2 = last_fm_user
             ## nicknames with whitespace after break at this point
-            # print '{0}klsdfdslkfdfdsfsdf{1}'.format(user1, user2)
             user1 = self.nick_alias(user1)
             user2 = self.nick_alias(user2)
             return user1, user2
@@ -35,6 +34,7 @@ class Last_fmWrapper(object):
             if last_fm_user.lower() in users[key]:
                 last_fm_user = key
                 return last_fm_user
+        return last_fm_user
 
     def get_now_playing(self, method):
         last_fm_user = self.user_parsing(self.last_fm_user)
@@ -81,7 +81,7 @@ class Last_fmWrapper(object):
         result = compare.find('result')
         score = result.find('score')
         comparison = round((float(score.text)*100), 2)
-        return '{0} and {1} have a compatibility rating of {2}%'.format(self.user1, self.user2, comparison)
+        return '8 ::{0} 8 ::{1} 8:: Compatibility: 10{2}%8::'.format(self.user1, self.user2, comparison)
 
     def register_user(self, source_, user_):
         user = unicode(user_)
