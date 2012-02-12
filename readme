@@ -1,0 +1,4 @@
+BiriBot is a shiny Python IRC framework. Currently not much to it of interest, but I plan
+on it being an event driven, highly modular framework to be easily extended in the future.
+Currently only has a last.fm now playing module. All settings are saved/loaded in the
+settings.json file. update your settings and run core.py to start.

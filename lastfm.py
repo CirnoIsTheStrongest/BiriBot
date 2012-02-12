@@ -20,18 +20,19 @@ class Last_fmWrapper(object):
             json.dump(user_dict, f, encoding='utf-8')
 
     def user_parsing(self, last_fm_user):
-        ''' expands tuple to be used in nick_alias ''')
+        ''' expands tuple to be used in nick_alias '''
         if type(last_fm_user) is tuple:
             user1, user2 = last_fm_user
             # nicknames with whitespace after break at this point
-            user1 = self.nick_alias(user1)
-            user2 = self.nick_alias(user2)
+            user1 = self.check_alias(user1)
+            user2 = self.check_alias(user2)
             return user1, user2
         else:
-            self.last_fm_user = self.nick_alias(last_fm_user)
+            self.last_fm_user = self.check_alias(last_fm_user)
             return self.last_fm_user
 
-    def nick_alias(self, last_fm_user):
+    def check_alias(self, last_fm_user):
+        ''' checks if an alias exists, else passes input instead '''
         users = self.open_user_database()
         for key in users:
             if last_fm_user.lower() in users[key]:
@@ -39,6 +40,7 @@ class Last_fmWrapper(object):
         return last_fm_user
 
     def get_now_playing(self, method):
+        ''' queries the last.fm api to get the current track for a given nick '''
         last_fm_user = self.user_parsing(self.last_fm_user)
         self.method = method
         parameters = {'user':self.last_fm_user, 'api_key':self.last_fm_api_key, 'method':self.method}
@@ -69,6 +71,7 @@ class Last_fmWrapper(object):
                 return '''{} isn't playing anything right now.'''.format(self.last_fm_user)
     
     def compare_tasteometer(self, method):
+        ''' queries the last.fm api to get the comparison rating for two nicks '''
         self.user1, self.user2 = self.user_parsing(self.last_fm_user)
         self.method = method
         parameters = {'type1':'user', 'type2':'user', 'value1':self.user1, 'value2':self.user2, 'api_key':self.last_fm_api_key, 'method':self.method}
@@ -86,6 +89,7 @@ class Last_fmWrapper(object):
         return '8 :: {0} 8 ::{1} 8:: Compatibility: 10{2}%8:: '.format(self.user1, self.user2, comparison)
 
     def register_user(self, source_, user_):
+        ''' registers aliases of last.fm users to their IRC nicknames '''
         user = unicode(user_)
         source = source_
         

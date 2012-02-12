@@ -3,7 +3,7 @@ from xml.etree import ElementTree
 import urllib
 import urllib2
 from events import MessageObj as Message
-from last_fm_wrapper import Last_fmWrapper
+from lastfm import Last_fmWrapper
 import time
 
 
@@ -62,7 +62,7 @@ def nih_to_user(nih):
 
     return nih[:identind]
 
-def command_parser(message_object, core):
+def command_parser(message_object, connection):
     message = message_object
     if message.msg[0] == '.np':
         if len(message.msg) == 1:
@@ -82,10 +82,10 @@ def command_parser(message_object, core):
                 last_fm_user_1 = message.msg[1]
                 last_fm_user_2 = message.msg[2]
         except IndexError:
-            core.write("PRIVMSG {} :Not enough arguments!".format(message.args[0]))
+            connection.write("PRIVMSG {} :Not enough arguments!".format(message.args[0]))
             return
         if last_fm_user_1 == last_fm_user_2:
-            core.write("PRIVMSG {} :You really shouln't try to compare yourself to yourself, it isn't nice.".format(message.args[0]))
+            connection.write("PRIVMSG {} :You really shouln't try to compare yourself to yourself, it isn't nice.".format(message.args[0]))
             return
         else:
             last_fm_users = (last_fm_user_1, last_fm_user_2)
@@ -103,23 +103,23 @@ def command_parser(message_object, core):
     elif message.msg[0] == '.stats':
         stats = 'Channel stats available here: http://goo.gl/w6K6L'
         return stats
-    elif message.args[0] == core.botnick:
-        if message.source == core.botowner:
+    elif message.args[0] == connection.botnick:
+        if message.source == connection.botowner:
             if message.msg[0] == '.exit':
-                    core.disconnect
+                    connection.disconnect
                     raise SystemExit
             elif message.msg[0] == '.say':
-                core.write("PRIVMSG {0} :{1}".format(message.msg[1], ' '.join(message.msg[2:])))
+                connection.write("PRIVMSG {0} :{1}".format(message.msg[1], ' '.join(message.msg[2:])))
             
             elif message.msg[0] == '.join':
-                core.join_channel(message.msg[1])
+                connection.join_channel(message.msg[1])
 
             elif message.msg[0] == '.part':
-                core.part_channel(message.msg[1])
+                connection.part_channel(message.msg[1])
 
-        elif message.source != core.botowner:
+        elif message.source != connection.botowner:
             if message.msg[0] == '.say':
-                core.write("PRIVMSG {} :Permission denied faggot.".format(message.source))
+                connection.write("PRIVMSG {} :Permission denied faggot.".format(message.source))
                 print '{0} tried and failed to abuse me with message "{1}"!'.format(message.source, ' '.join(message.msg[2:]))
     else:
         pass
