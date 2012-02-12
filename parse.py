@@ -5,7 +5,7 @@ import urllib2
 from events import MessageObj as Message
 from lastfm import Last_fmWrapper
 import time
-
+from twitter import TwitterWrapper as Twitter
 
 def settings_load():
     with open('settings.json', 'rb') as f:
@@ -98,6 +98,22 @@ def command_parser(message_object, connection):
         user = message.msg[1]
         source = message.source
         results = last_fm.register_user(source, user)
+        return results
+    
+    elif message.msg[0] == '.twitnick':
+        try:
+            twitter = Twitter(message.msg[1])
+        except IndexError:
+            twitter = Twitter(message.source)
+        results = twitter.register_user(message.source)
+        return results
+
+    elif message.msg[0] == '.twitter':
+        try:
+            twitter = Twitter(message.msg[1])
+        except IndexError:
+            twitter = Twitter(message.source)
+        results = twitter.get_status()
         return results
 
     elif message.msg[0] == '.stats':

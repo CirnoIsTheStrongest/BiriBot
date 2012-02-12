@@ -26,6 +26,7 @@ class Last_fmWrapper(object):
             # nicknames with whitespace after break at this point
             user1 = self.check_alias(user1)
             user2 = self.check_alias(user2)
+            print user1, user2
             return user1, user2
         else:
             self.last_fm_user = self.check_alias(last_fm_user)

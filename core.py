@@ -15,7 +15,6 @@ while 'Caer is the embodiment of failure':
                     if connection.botpass != '':
                         print 'Logging in...'
                         login = connection.identify()
-
                         if login == True:
                             connection.logged_in = True
                             print 'Login successful!'
