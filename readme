@@ -2,3 +2,16 @@ BiriBot is a shiny Python IRC framework. Currently not much to it of interest, b
 on it being an event driven, highly modular framework to be easily extended in the future.
 Currently only has a last.fm now playing module. All settings are saved/loaded in the
 settings.json file. update your settings and run core.py to start.
+
+Usage:
+
+'.alias <nick>' adds an alias for your nick to the last.fm user <nick>
+'.np <nick>' checks the last.fm api for the given <nick>'s currently playing track
+'.compare <nick>' or '.compare <nick> <nick>' compares two nicknames last.fm compatibility.
+the first compares your IRC username or it's aliased one to the given <nick>, the second
+compares two given nicknames.
+'.join <channel>' joins the given <channel>
+'.part <channel>' parts the given <channel>
+'.exit'  closes the open socket and disconnects from the server -> responds only to the botowner
+'.say <location> <message>' messages the given channel/username (<location>) with the
+specified <message> 
