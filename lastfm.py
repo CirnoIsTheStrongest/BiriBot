@@ -66,7 +66,7 @@ class Last_fmWrapper(object):
                     artist_text = track.find('artist')
                     artist = artist_text.text
                     artist = artist.encode('utf8')
-                    return '8:: {0}8:: Now Playing -  {1} - {2} 8::'.format(self.last_fm_user, song, artist)
+                    return '8::  {0}8 ::  Now Playing -  {1} - {2} 8 ::'.format(self.last_fm_user, song, artist)
                     # return "{0} now playing -{1}- by -{2}-.".format(self.last_fm_user, song, artist)
             except KeyError:
                 return '''{} isn't playing anything right now.'''.format(self.last_fm_user)
@@ -87,7 +87,7 @@ class Last_fmWrapper(object):
         result = compare.find('result')
         score = result.find('score')
         comparison = round((float(score.text)*100), 2)
-        return '8 :: {0} 8 ::{1} 8:: Compatibility: 10{2}%8:: '.format(self.user1, self.user2, comparison)
+        return '8:: {0} 8 :: {1} 8 :: Compatibility: 10{2}%8 :: '.format(self.user1, self.user2, comparison)
 
     def register_user(self, source_, user_):
         ''' registers aliases of last.fm users to their IRC nicknames '''
