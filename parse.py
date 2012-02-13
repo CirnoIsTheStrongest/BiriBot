@@ -3,9 +3,9 @@ from xml.etree import ElementTree
 import urllib
 import urllib2
 from events import MessageObj as Message
-from lastfm import Last_fmWrapper
+from modules.lastfm import Last_fmWrapper
 import time
-from twitter import TwitterWrapper as Twitter
+from modules.twitter import TwitterWrapper as Twitter
 
 def settings_load():
     with open('settings.json', 'rb') as f:
