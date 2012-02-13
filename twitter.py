@@ -13,50 +13,6 @@ class TwitterWrapper(object):
         self.twitter_user = twitter_user
         self.database = 'twitter_db.json'
 
-    # def open_user_database(self):
-    #     ''' opens the database of aliased users'''
-        
-    #     with open('twitter_db.json', 'rb') as f:
-    #         return json.load(f, encoding='utf-8')
-
-    # def save_user_database(self, user_dict):
-    #     ''' saves the database of aliased users'''
-        
-    #     with open('twitter_db.json', 'wb') as f:
-    #         json.dump(user_dict, f, encoding='utf-8')
-
-    # def check_alias(self):
-    #     ''' checks if an alias exists, else passes input instead '''
-        
-    #     users = self.open_user_database()
-    #     for key in users:
-    #         if self.twitter_user.lower() in users[key]:
-    #             return key
-    #     return self.twitter_user
-    
-    # def register_user(self, source_,):
-    #     ''' registers aliases of twitter users to their IRC nicknames '''
-        
-    #     user = unicode(self.twitter_user)
-    #     source = source_
-        
-    #     try:
-    #         users = open_user_database('twitter_db.json')
-    #     except IOError:
-    #         users = {}
-    #     try:
-    #         user_list = users[user]
-    #         if source.lower() in user_list:
-    #             return '{0} is already aliased to {1}.'.format(user, source)
-    #         else:
-    #             users[user].append(source.lower())
-    #             self.save_user_database(users)
-    #             return 'Successfully aliased {0} to {1}.'.format(user, source)
-    #     except KeyError:
-    #         users[user] = [source.lower()]
-    #         if users != None:
-    #             save_user_database(users, 'twitter_db.json')
-    #             return 'Added {0} with alias {1}.'.format(user, source)
 
     def register_user(self, source_):
         user_registration = register_user_(source_, self.twitter_user, self.database)

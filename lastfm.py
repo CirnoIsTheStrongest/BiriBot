@@ -11,15 +11,6 @@ class Last_fmWrapper(object):
         self.last_fm_user = last_fm_user
         self.database = 'users.json'
 
-    # def open_user_database(self):
-    #     ''' opens the database of aliased users'''
-    #     with open('users.json', 'rb') as f:
-    #         return json.load(f, encoding='utf-8')
-
-    # def save_user_database(self, user_dict):
-    #     ''' saves the database of aliased users'''
-    #     with open('users.json', 'wb') as f:
-    #         json.dump(user_dict, f, encoding='utf-8')
     def register_user(self, source_, user):
         user_registration = register_user_(source_, user, self.database)
         return user_registration
@@ -36,13 +27,6 @@ class Last_fmWrapper(object):
             self.last_fm_user = check_alias(last_fm_user, self.database)
             return self.last_fm_user
 
-    # def check_alias(self, last_fm_user):
-    #     ''' checks if an alias exists, else passes input instead '''
-    #     users = self.open_user_database()
-    #     for key in users:
-    #         if last_fm_user.lower() in users[key]:
-    #             return key
-    #     return last_fm_user
 
     def get_now_playing(self, method):
         ''' queries the last.fm api to get the current track for a given nick '''
@@ -71,7 +55,6 @@ class Last_fmWrapper(object):
                     artist = artist_text.text
                     artist = artist.encode('utf8')
                     return '8::  {0}8 ::  Now Playing -  {1} - {2} 8 ::'.format(self.last_fm_user, song, artist)
-                    # return "{0} now playing -{1}- by -{2}-.".format(self.last_fm_user, song, artist)
             except KeyError:
                 return '''{} isn't playing anything right now.'''.format(self.last_fm_user)
     
@@ -92,26 +75,3 @@ class Last_fmWrapper(object):
         score = result.find('score')
         comparison = round((float(score.text)*100), 2)
         return '8:: {0} 8 :: {1} 8 :: Compatibility: 10{2}%8 :: '.format(self.user1, self.user2, comparison)
-
-    # def register_user(self, source_, user_):
-    #     ''' registers aliases of last.fm users to their IRC nicknames '''
-    #     user = unicode(user_)
-    #     source = source_
-        
-    #     try:
-    #         users = self.open_user_database()
-    #     except IOError:
-    #         users = {}
-    #     try:
-    #         user_list = users[user]
-    #         if source.lower() in user_list:
-    #             return '{0} is already aliased to {1}.'.format(user, source)
-    #         else:
-    #             users[user].append(source.lower())
-    #             self.save_user_database(users)
-    #             return 'Successfully aliased {0} to {1}.'.format(user, source)
-    #     except KeyError:
-    #         users[user] = [source.lower()]
-    #         if users != None:
-    #             save_user_database(users, 'users.json')
-    #             return 'Added {0} with alias {1}.'.format(user, source)
