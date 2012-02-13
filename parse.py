@@ -112,7 +112,6 @@ def command_parser(message_object, connection):
         try:
             twitter = Twitter(message.msg[1])
         except IndexError:
-            print 'There was an index error'
             twitter = Twitter(message.source)
         results = twitter.get_status()
         return results
