@@ -13,7 +13,6 @@ class TwitterWrapper(object):
         self.twitter_user = twitter_user
         self.database = 'twitter_db.json'
 
-
     def register_user(self, source_):
         user_registration = register_user_(source_, self.twitter_user, self.database)
         return user_registration
