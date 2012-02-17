@@ -1,11 +1,11 @@
 import json
-from xml.etree import ElementTree
 import urllib
 import urllib2
+from xml.etree import ElementTree
 from events import MessageObj as Message
 from modules.lastfm import Last_fmWrapper
-import time
 from modules.twitter import TwitterWrapper as Twitter
+from modules.railgun import Railgun
 
 def settings_load():
     with open('settings.json', 'rb') as f:
@@ -114,6 +114,22 @@ def command_parser(message_object, connection):
         except IndexError:
             twitter = Twitter(message.source)
         results = twitter.get_status()
+        return results
+    
+    elif message.msg[0] == '.tweetid':
+        twitter = Twitter(message.source)
+        try:
+            results = twitter.id_lookup(message.msg[1])
+        except IndexError:
+            return 'Not enough arguments, please add a twitter id.'
+        return results
+
+    elif message.msg[0] == '.test':
+        try:
+            railgun = Railgun(message.msg[1])
+        except IndexError:
+            railgun = Railgun(message.source)
+        results = railgun.get_prizes()
         return results
 
     elif message.msg[0] == '.stats':

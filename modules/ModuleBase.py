@@ -1,5 +1,8 @@
 import json
 
+# Convert to class, init with User as input
+
+
 def open_user_database(database):
     ''' opens the database of aliased users'''
 
@@ -14,14 +17,17 @@ def save_user_database(user_dict, database):
 
 def check_alias(username, database):
     ''' checks if an alias exists, else passes input instead '''
-    users = open_user_database(database)
+    try:
+        users = open_user_database(database)
+    except IOError:
+        return username
     for key in users:
         if username.lower() in users[key]:
             return key
     return username
 
 def register_user_(source_, user, database):
-    ''' registers aliases of twitter users to their IRC nicknames '''
+    ''' registers aliases of IRC nicknames '''
 
     user = unicode(user)
     source = source_
