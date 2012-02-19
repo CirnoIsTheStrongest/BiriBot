@@ -43,7 +43,12 @@ class TwitterWrapper(object):
             match = regex.match(status_source)
             if match:
                 status_source = match.groups()[0].strip()
-            return "8:: {0}8 :: {1} 8:: Tweet: 10{2}8 ::  {3} 8 ::  ".format(self.twitter_user, status_source, status_text, status_time)
+            return "8:: {0}8 :: {1} 8:: Tweet: 10{2}8 ::  {3} 8 ::  ".format(
+                self.twitter_user,
+                status_source,
+                status_text,
+                status_time
+                )
 
 
     def id_lookup(self, tweet_id):
@@ -68,7 +73,12 @@ class TwitterWrapper(object):
             created_at = query_results['user']['created_at']
             source = query_results['source'].encode('utf-8')
             match = regex.match(source)
+            print tweet, twitter_user, created_at, source
             if match:
                 source = match.groups()[0].strip()
-                print tweet, twitter_user, created_at, source
-                return "8:: {0}8 :: {1} 8:: Tweet: 10{2}8 ::  {3} 8 ::  ".format(twitter_user, source, tweet, created_at)
+            return "8:: {0}8 :: {1} 8:: Tweet: 10{2}8 ::  {3} 8 ::  ".format(
+                twitter_user,
+                source,
+                tweet,
+                created_at
+                )
