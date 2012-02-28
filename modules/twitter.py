@@ -7,22 +7,21 @@ from ModuleBase import *
 class TwitterWrapper(object):
     ''' class for interacting with twitter api'''
 
-    def __init__(self, twitter_user):
+    def __init__(self):
         self.api_url = 'http://api.twitter.com'
-        self.twitter_user = twitter_user
         self.database = 'twitter_db.json'
 
-    def register_user(self, source_):
-        user_registration = register_user_(source_, self.twitter_user, self.database)
+    def register_user(self, source_, user):
+        user_registration = register_user_(source_, user, self.database)
         return user_registration
     
-    def get_status(self):
+    def get_status(self, twitter_user):
         ''' mskes a single api call to get twitter status'''
 
         url_base = '/1/users/show.json'
-        self.twitter_user = check_alias(self.twitter_user, self.database)
+        twitter_user = check_alias(twitter_user, self.database)
         request_data = urllib.urlencode({
-            'screen_name':self.twitter_user,
+            'screen_name':twitter_user,
             'include_entities':'True'
                 })
         request = urllib2.Request('?'.join([''.join([self.api_url, url_base]), request_data]))
@@ -44,7 +43,7 @@ class TwitterWrapper(object):
             if match:
                 status_source = match.groups()[0].strip()
             return "8:: {0}8 :: {1} 8:: Tweet: 10{2}8 ::  {3} 8 ::  ".format(
-                self.twitter_user,
+                twitter_user,
                 status_source,
                 status_text,
                 status_time

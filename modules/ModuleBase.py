@@ -2,7 +2,6 @@ import json
 
 # Convert to class, init with User as input
 
-
 def open_user_database(database):
     ''' opens the database of aliased users'''
 

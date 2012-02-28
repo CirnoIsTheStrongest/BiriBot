@@ -64,13 +64,15 @@ def nih_to_user(nih):
 
 def command_parser(message_object, connection):
     message = message_object
+    last_fm = Last_fmWrapper()
+    railgun = Railgun()
+    twitter = Twitter()
     if message.msg[0] == '.np':
         if len(message.msg) == 1:
             last_fm_user = message.source
         else:
             last_fm_user = message.msg[1]
-        last_fm = Last_fmWrapper(last_fm_user)
-        now_playing = last_fm.get_now_playing('user.getRecentTracks')
+        now_playing = last_fm.get_now_playing('user.getRecentTracks', last_fm_user)
         return now_playing
 
     elif message.msg[0] == '.compare':
@@ -89,35 +91,28 @@ def command_parser(message_object, connection):
             return
         else:
             last_fm_users = (last_fm_user_1, last_fm_user_2)
-            last_fm = Last_fmWrapper(last_fm_users)
-            comparison = last_fm.compare_tasteometer('tasteometer.compare')
+            comparison = last_fm.compare_tasteometer('tasteometer.compare', last_fm_users)
             return comparison
     
     elif message.msg[0] == '.alias':
-        last_fm = Last_fmWrapper(None)
         user = message.msg[1]
         source = message.source
         results = last_fm.register_user(source, user)
         return results
     
     elif message.msg[0] == '.twitnick':
-        try:
-            twitter = Twitter(message.msg[1])
-        except IndexError:
-            twitter = Twitter(message.source)
         results = twitter.register_user(message.source)
         return results
 
     elif message.msg[0] == '.twitter':
         try:
-            twitter = Twitter(message.msg[1])
+            twitter_user = message.msg[1]
         except IndexError:
-            twitter = Twitter(message.source)
-        results = twitter.get_status()
+            twitter_user = message.source
+        results = twitter.get_status(twitter_user)
         return results
     
     elif message.msg[0] == '.tweetid':
-        twitter = Twitter(message.source)
         try:
             results = twitter.id_lookup(message.msg[1])
         except IndexError:
@@ -126,10 +121,10 @@ def command_parser(message_object, connection):
 
     elif message.msg[0] == '.test':
         try:
-            railgun = Railgun(message.msg[1])
+            rail_user = message.msg[1]
         except IndexError:
-            railgun = Railgun(message.source)
-        results = railgun.get_prizes()
+            rail_user = message.source
+        results = railgun.get_prizes(rail_user)
         return results
 
     elif message.msg[0] == '.stats':

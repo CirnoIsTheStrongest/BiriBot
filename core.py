@@ -3,6 +3,9 @@ from parse import *
 import time
 settings = settings_load()
 connection = Connection(settings)
+connection.connect()
+connection.registration()
+modules = []
 
 while 'Caer is the embodiment of failure':
     buffer = connection.sock.recv(4096)

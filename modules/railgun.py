@@ -5,13 +5,12 @@ from ModuleBase import *
 class Railgun(object):
     ''' module for the .railgun counting game '''
 
-    def __init__(self, user):
-        self.user = user
+    def __init__(self):
         self.railgun_db = 'railguns.json'
         self.user_db = 'railgun_users.json'
 
-    def register_user(self, source_):
-        registration = register_user_(source_, self.user, self.user_db)
+    def register_user(self, source_, user):
+        registration = register_user_(source_, user, self.user_db)
 
     def railguns(self):
         railguns = random(1,120)
@@ -68,9 +67,9 @@ class Railgun(object):
             positive = False
         return positive
 
-    def get_prizes(self):
+    def get_prizes(self, user):
         ''' function for generating the random number of railguns and weights'''
-        user = check_alias(self.user, self.user_db)
+        user = check_alias(user, self.user_db)
         misakas = self.misakas()
         last_orders = self.last_orders()
         railguns = self.railguns()
@@ -105,7 +104,7 @@ class Railgun(object):
 
         return '{0} {1} MISAKAS, {2} Railguns, {3} Last Orders.'.format(receipt, misakas, railguns, last_orders)
 
-    def check_stats(self):
+    def check_stats(self, user):
         ''' function for checking your current score '''
-        user = check_alias(self.user, self.user_db)
+        user = check_alias(user, self.user_db)
         

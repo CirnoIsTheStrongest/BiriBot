@@ -22,7 +22,6 @@ class Connection(object):
         self.botpass = settings['botpass']
         self.botowner = settings['botowner']
         self.channel = settings['channel']
-        self._initialization()
         self.logged_in = False
     
     def connect(self):
@@ -91,25 +90,13 @@ class Connection(object):
     def registration(self):
         ''' Sends user registration information to server.'''
 
-        # sends USER command with arguments USERNAME,SERVER,SERVERNAME,REALNAME
         self.write("USER {0} {1} {2} {3}".format(self.botnick, self.server, self.servername, self.botnick))
 
-        # sends NICK command with argument NICKNAME
         self.write("NICK {}".format(self.botnick))
 
     def identify(self):
         ''' identifies with nickserv '''
 
         if self.botpass != "":
-        # if botpass isn't empty, identifies with nickserv using self.BOTPASS
             self.write("PRIVMSG NickServ :ID {}".format(self.botpass))
             return True
-
-
-
-    def _initialization(self):
-        ''' Initializes connection, logs in and joins channels.'''
-        # to be removed and added elsewhere later
-
-        self.connect()
-        self.registration()

@@ -5,10 +5,9 @@ import json
 from ModuleBase import *
 
 class Last_fmWrapper(object):
-    def __init__(self, last_fm_user):
+    def __init__(self):
         self.last_fm_api_key = 'b05bb97282501385744baf6cdafb261c'
         self.api_url = 'http://ws.audioscrobbler.com/2.0/'
-        self.last_fm_user = last_fm_user
         self.database = 'users.json'
 
     def register_user(self, source_, user):
@@ -17,9 +16,13 @@ class Last_fmWrapper(object):
 
     def user_parsing(self, last_fm_user):
         ''' expands tuple to be used in nick_alias '''
+        self.last_fm_user = last_fm_user
+
         if type(last_fm_user) is tuple:
             user1, user2 = last_fm_user
+
             # nicknames with whitespace after break at this point
+
             user1 = check_alias(user1, self.database)
             user2 = check_alias(user2, self.database)
             return user1, user2
@@ -28,9 +31,9 @@ class Last_fmWrapper(object):
             return self.last_fm_user
 
 
-    def get_now_playing(self, method):
+    def get_now_playing(self, method, last_fm_user):
         ''' queries the last.fm api to get the current track for a given nick '''
-        last_fm_user = self.user_parsing(self.last_fm_user)
+        last_fm_user = self.user_parsing(last_fm_user)
         self.method = method
         parameters = {'user':self.last_fm_user, 'api_key':self.last_fm_api_key, 'method':self.method}
         encoded_parameters = urllib.urlencode(parameters)
@@ -58,9 +61,9 @@ class Last_fmWrapper(object):
             except KeyError:
                 return '''{} isn't playing anything right now.'''.format(self.last_fm_user)
     
-    def compare_tasteometer(self, method):
+    def compare_tasteometer(self, method, last_fm_users):
         ''' queries the last.fm api to get the comparison rating for two nicks '''
-        self.user1, self.user2 = self.user_parsing(self.last_fm_user)
+        self.user1, self.user2 = self.user_parsing(last_fm_users)
         self.method = method
         parameters = {'type1':'user', 'type2':'user', 'value1':self.user1, 'value2':self.user2, 'api_key':self.last_fm_api_key, 'method':self.method}
         encoded_parameters = urllib.urlencode(parameters)
