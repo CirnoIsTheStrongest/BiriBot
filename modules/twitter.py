@@ -35,7 +35,10 @@ class TwitterWrapper(object):
             return "This user's tweets are protected."
         else:
             regex = re.compile('<a href=.*?>(.*?)</a>', re.S|re.M)
-            status = query_results['status']
+            try:
+                status = query_results['status']
+            except KeyError:
+                return "This user has never tweeted anything."
             status_text = status['text'].encode('utf-8')
             status_time = status['created_at']
             status_source = status['source'].encode('utf-8')

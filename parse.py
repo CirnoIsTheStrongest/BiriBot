@@ -101,7 +101,7 @@ def command_parser(message_object, connection):
         return results
     
     elif message.msg[0] == '.twitnick':
-        results = twitter.register_user(message.source)
+        results = twitter.register_user(message.source, message.msg[1])
         return results
 
     elif message.msg[0] == '.twitter':

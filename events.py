@@ -1,6 +1,6 @@
 class MessageObj:
     source = None
-    type = None
+    msg_type = None
     args = None
     msg = None
 

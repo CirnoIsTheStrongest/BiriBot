@@ -12,7 +12,7 @@ def save_user_database(user_dict, database):
     ''' saves the database of aliased users'''
 
     with open(database, 'wb') as f:
-        json.dump(user_dict, f, encoding='utf-8')
+        json.dump(user_dict, f, indent=4, encoding='utf-8')
 
 def check_alias(username, database):
     ''' checks if an alias exists, else passes input instead '''
