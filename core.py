@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 from connect import Connection
 from parse import *
 import time
