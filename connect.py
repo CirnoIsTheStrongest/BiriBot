@@ -3,6 +3,7 @@ import sys
 import os
 import platform
 import time
+import ssl
 
 ## TODO Build a list of modules that have method message_relevance()
 ## TODO if message_relevance returns true, call the method that 
@@ -22,7 +23,12 @@ class Connection(object):
         self.botpass = settings['botpass']
         self.botowner = settings['botowner']
         self.channel = settings['channel']
+        self.ssl = settings['SSL']
         self.logged_in = False
+        self.validate = False
+        self.ca = None
+        self.validate = None
+        self.keyfile = None
     
     def connect(self):
         ''' Function for connecting to the server '''
@@ -46,6 +52,20 @@ class Connection(object):
 
         if self.sock == None:
             print 'Failed to create socket.'
+
+        if self.ssl:
+            # Find out if we want to validate the certificate or not
+            if self.validate:
+                crt_rqs = ssl.CERT_REQUIRED
+            else:
+                crt_rqs = ssl.CERT_NONE
+
+            self.sock = ssl.wrap_socket(
+                    self.sock,
+                    ca_certs=self.ca,
+                    cert_reqs=crt_rqs,
+                    certfile=self.keyfile
+            )
         
         self.sock.connect((self.server, self.port))
 
@@ -67,9 +87,11 @@ class Connection(object):
 
 
     def write(self, data):
-        ''' writes to a connected socket ''' 
-
-        self.sock.send(data + "\r\n")
+        ''' writes to a connected socket '''
+        if self.ssl == True:
+            self.sock.write(data + "\r\n")
+        else:
+            self.sock.send(data + "\r\n")
 
     def join_channel(self, channel):
         ''' joins a channel on the server '''

@@ -2,50 +2,51 @@ import json
 
 # Convert to class, init with User as input
 
-def open_user_database(database):
-    ''' opens the database of aliased users'''
+def open_name_database(database):
+    ''' opens the database of aliased names'''
 
     with open(database, 'rb') as f:
         return json.load(f, encoding='utf-8')
 
-def save_user_database(user_dict, database):
-    ''' saves the database of aliased users'''
+def save_names_database(name_dict, database):
+    ''' saves the database of aliased names'''
 
     with open(database, 'wb') as f:
-        json.dump(user_dict, f, indent=4, encoding='utf-8')
+        json.dump(name_dict, f, indent=4, encoding='utf-8')
 
-def check_alias(username, database):
+def check_alias(name, database):
     ''' checks if an alias exists, else passes input instead '''
     try:
-        users = open_user_database(database)
+        names = open_name_database(database)
     except IOError:
-        return username
-    for key in users:
-        if username.lower() in users[key]:
+        return name
+    for key in names:
+        print key
+        if name.lower() in names[key]:
             return key
-    return username
+    return name
 
-def register_user_(source_, user, database):
-    ''' registers aliases of IRC nicknames '''
+def register_name_(source_, name, database):
+    ''' registers aliases a name to something, i.e an IRC username/anime name '''
 
-    user = unicode(user)
+    name = unicode(name)
     source = source_
     database = database
 
     try:
-        users = open_user_database(database)
+        names = open_name_database(database)
     except IOError:
-        users = {}
+        names = {}
     try:
-        user_list = users[user]
-        if source.lower() in user_list:
-            return '{0} is already aliased to {1}.'.format(user, source)
+        name_list = names[name]
+        if source.lower() in name_list:
+            return '{0} is already aliased to {1}.'.format(name, source)
         else:
-            users[user].append(source.lower())
-            save_user_database(users, database)
-            return 'Successfully aliased {0} to {1}.'.format(user, source)
+            names[name].append(source.lower())
+            save_names_database(names, database)
+            return 'Successfully aliased {0} to {1}.'.format(name, source)
     except KeyError:
-        users[user] = [source.lower()]
-        if users != None:
-            save_user_database(users, database)
-            return 'Added {0} with alias {1}.'.format(user, source)
+        names[name] = [source.lower()]
+        if names != None:
+            save_names_database(names, database)
+            return 'Added {0} with alias {1}.'.format(name, source)

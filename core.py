@@ -10,7 +10,10 @@ connection.registration()
 modules = []
 
 while 'Caer is the embodiment of failure':
-    buffer = connection.sock.recv(4096)
+    if connection.ssl == True:
+        buffer = connection.sock.read(4096)
+    else:
+        buffer = connection.sock.recv(4096)
     lines = splitline(buffer)
     for line in lines:
         message = parse(line)

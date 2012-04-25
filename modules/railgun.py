@@ -10,7 +10,7 @@ class Railgun(object):
         self.user_db = 'railgun_users.json'
 
     def register_user(self, source_, user):
-        registration = register_user_(source_, user, self.user_db)
+        registration = register_name_(source_, user, self.user_db)
 
     def railguns(self):
         railguns = random(1,120)
@@ -60,47 +60,70 @@ class Railgun(object):
         return misakas
 
     def give_or_take(self):
-        choice = random(1,100)
-        if choice in range(1,71):
-            positive = True
-        else:
-            positive = False
-        return positive
+        ''' decides whether a value is negative or positive'''
+        self.prize_list = [self.misakas, self.railguns, self.last_orders]
+        for item in self.prize_list:
+            choice = random(1,100)
+            if choice in range(1,71):
+                print locals()
+                self.prize_dict[self.user][globals()[item]] += item
+                return True
+            else:
+                print locals()
+                self.prize_dict[self.user][globals()[item]] -= item
+                return False
 
-    def get_prizes(self, user):
-        ''' function for generating the random number of railguns and weights'''
-        user = check_alias(user, self.user_db)
-        misakas = self.misakas()
-        last_orders = self.last_orders()
-        railguns = self.railguns()
+    def output_msg(self):
+        ''' builds output strings'''
+
         receipt_choice = self.give_or_take()
         if receipt_choice == True:
             receipt = 'You received: '
         else:
             receipt = 'You lost: '
-        try:
-            prize_dict = open_user_database(self.railgun_db)
-        except IOError:
-            prize_dict = {}
-            prize_dict[user] = {'misakas':misakas, 'railguns':railguns, 'last_orders':last_orders}
-            save_user_database(prize_dict, self.railgun_db)
-            return '{0} {1} MISAKAS, {2} Railguns, {3} Last Orders.'.format(receipt,misakas, railguns, last_orders)
 
-        total_misakas = prize_dict[user]['misakas']
-        total_last_orders = prize_dict[user]['last_orders']
-        total_railguns = prize_dict[user]['railguns']
 
-        if receipt_choice == True:
-            prize_dict[user]['misakas'] += misakas
-            prize_dict[user]['railguns'] += railguns
-            prize_dict[user]['last_orders'] += last_orders
-            save_user_database(prize_dict, self.railgun_db)
+    # def give_or_take(self):
+    #     choice = random(1,100)
+    #     if choice in range(1,71):
+    #         positive = True
+    #     else:
+    #         positive = False
+    #     return positive
+
+    def get_prizes(self, user):
+        ''' function for generating the random number of railguns and weights'''
         
-        else:
-            prize_dict[user]['misakas'] -= misakas
-            prize_dict[user]['railguns'] -= railguns
-            prize_dict[user]['last_orders'] -= last_orders
-            save_user_database(prize_dict, self.railgun_db)
+        self.user = check_alias(user, self.user_db)
+        self.misakas = self.misakas()
+        self.last_orders = self.last_orders()
+        self.railguns = self.railguns()
+        try:
+            self.prize_dict = open_user_database(self.railgun_db)
+        except IOError:
+            self.prize_dict = {}
+            self.prize_dict[user] = {'misakas':self.misakas, 'railguns':self.railguns, 'last_orders':self.last_orders}
+            save_user_database(self.prize_dict, self.railgun_db)
+            receipt = self.output_msg()
+            return '{0} {1} MISAKAS, {2} Railguns, {3} Last Orders.'.format(receipt,misakas, railguns, last_orders)
+        
+        receipt = self.output_msg()
+        total_misakas = self.prize_dict[user]['misakas']
+        total_last_orders = self.prize_dict[user]['last_orders']
+        total_railguns = self.prize_dict[user]['railguns']
+        save_user_database(self.prize_dict, self.railgun_db)
+
+        # if receipt_choice == True:
+        #     prize_dict[user]['misakas'] += misakas
+        #     prize_dict[user]['railguns'] += railguns
+        #     prize_dict[user]['last_orders'] += last_orders
+        #     save_user_database(prize_dict, self.railgun_db)
+        
+        # else:
+        #     prize_dict[user]['misakas'] -= misakas
+        #     prize_dict[user]['railguns'] -= railguns
+        #     prize_dict[user]['last_orders'] -= last_orders
+        #     save_user_database(prize_dict, self.railgun_db)
 
         return '{0} {1} MISAKAS, {2} Railguns, {3} Last Orders.'.format(receipt, misakas, railguns, last_orders)
 

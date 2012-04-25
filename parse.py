@@ -6,6 +6,8 @@ from events import MessageObj as Message
 from modules.lastfm import Last_fmWrapper
 from modules.twitter import TwitterWrapper as Twitter
 from modules.railgun import Railgun
+from modules.airing import Air
+from modules.choose import Choice
 
 def settings_load():
     with open('settings.json', 'rb') as f:
@@ -67,6 +69,9 @@ def command_parser(message_object, connection):
     last_fm = Last_fmWrapper()
     railgun = Railgun()
     twitter = Twitter()
+    airing = Air()
+    choose = Choice()
+
     if message.msg[0] == '.np':
         if len(message.msg) == 1:
             last_fm_user = message.source
@@ -74,6 +79,30 @@ def command_parser(message_object, connection):
             last_fm_user = message.msg[1]
         now_playing = last_fm.get_now_playing('user.getRecentTracks', last_fm_user)
         return now_playing
+
+    elif message.msg[0] == '.air':
+        if len(message.msg) == 1:
+            return "Not enough arguments, please add a show to request."
+        else:
+            return airing.lookup_show(message.msg[1:])
+
+    elif message.msg[0] == '.animalias':
+        if len(message.msg) == 2:
+            return "Not enough paramters, please add a show to alias."
+
+        new_message = ' '.join(message.msg[1:])
+        new_message = new_message.split('|')
+        anime = new_message[0].rstrip()
+        alias = new_message[1].lstrip()
+        results = airing.alias_anime(alias, anime)
+        return  results
+
+    elif message.msg[0] == ".choose":
+        if len(message.msg) == 1:
+            return "Not enough arguments, please add a show to request!"
+
+        else:
+            return "I choose: {}".format(choose.choice(message.msg[1:]))
 
     elif message.msg[0] == '.compare':
         try:
@@ -84,11 +113,10 @@ def command_parser(message_object, connection):
                 last_fm_user_1 = message.msg[1]
                 last_fm_user_2 = message.msg[2]
         except IndexError:
-            connection.write("PRIVMSG {} :Not enough arguments!".format(message.args[0]))
-            return
+            return "Not enough arguments!".format(message.args[0])
+
         if last_fm_user_1 == last_fm_user_2:
-            connection.write("PRIVMSG {} :You really shouln't try to compare yourself to yourself, it isn't nice.".format(message.args[0]))
-            return
+            return "You really shouln't try to compare yourself to yourself, it isn't nice.".format(message.args[0])
         else:
             last_fm_users = (last_fm_user_1, last_fm_user_2)
             comparison = last_fm.compare_tasteometer('tasteometer.compare', last_fm_users)
@@ -119,13 +147,13 @@ def command_parser(message_object, connection):
             return 'Not enough arguments, please add a twitter id.'
         return results
 
-    elif message.msg[0] == '.test':
-        try:
-            rail_user = message.msg[1]
-        except IndexError:
-            rail_user = message.source
-        results = railgun.get_prizes(rail_user)
-        return results
+    # elif message.msg[0] == '.test':
+    #     try:
+    #         rail_user = message.msg[1]
+    #     except IndexError:
+    #         rail_user = message.source
+    #     results = railgun.get_prizes(rail_user)
+    #     return results
 
     elif message.msg[0] == '.stats':
         stats = 'Channel stats available here: http://goo.gl/w6K6L'
@@ -136,7 +164,8 @@ def command_parser(message_object, connection):
                     connection.disconnect
                     raise SystemExit
             elif message.msg[0] == '.say':
-                connection.write("PRIVMSG {0} :{1}".format(message.msg[1], ' '.join(message.msg[2:])))
+                print "{}".format(' '.join(message.msg[2:]))
+                return "{}".format(' '.join(message.msg[2:]))
             
             elif message.msg[0] == '.join':
                 connection.join_channel(message.msg[1])

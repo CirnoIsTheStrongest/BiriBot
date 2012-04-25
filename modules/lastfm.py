@@ -11,7 +11,7 @@ class Last_fmWrapper(object):
         self.database = 'users.json'
 
     def register_user(self, source_, user):
-        user_registration = register_user_(source_, user, self.database)
+        user_registration = register_name_(source_, user, self.database)
         return user_registration
 
     def user_parsing(self, last_fm_user):
