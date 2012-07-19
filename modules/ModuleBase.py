@@ -21,7 +21,6 @@ def check_alias(name, database):
     except IOError:
         return name
     for key in names:
-        print key
         if name.lower() in names[key]:
             return key
     return name
