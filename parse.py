@@ -181,7 +181,7 @@ def command_parser(message_object, connection):
     #     return results
 
     elif message.msg[0] == '.stats':
-        stats = 'Channel stats available here: http://goo.gl/w6K6L'
+        stats = 'Channel stats available here: http://www.chalamius.se/ircstats/biribiri.html'
         return stats
     elif message.args[0] == connection.botnick:
         if message.source == connection.botowner:
