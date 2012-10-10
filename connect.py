@@ -1,21 +1,19 @@
 import socket
-import sys
-import os
-import platform
-import time
+
 import ssl
 
 ## TODO Build a list of modules that have method message_relevance()
-## TODO if message_relevance returns true, call the method that 
+## TODO if message_relevance returns true, call the method that
 ## is referenced
 ## TODO add flood protection
 ## TODO verify login before joining channels
 ## TODO make event handler
 
+
 class Connection(object):
     ''' Core class, connects to server.'''
 
-    def __init__(self, settings ):
+    def __init__(self, settings):
         self.server = settings['server']
         self.servername = settings['servername']
         self.port = settings['port']
@@ -29,7 +27,7 @@ class Connection(object):
         self.ca = None
         self.validate = None
         self.keyfile = None
-    
+
     def connect(self):
         ''' Function for connecting to the server '''
         results = socket.getaddrinfo(
@@ -38,7 +36,7 @@ class Connection(object):
         socket.AF_UNSPEC,
         socket.SOCK_STREAM
         )
-        
+
         for result in results:
             try:
                 family, socket_type, proto, cannon_name, socket_address = result
@@ -47,7 +45,7 @@ class Connection(object):
                 self.sock = None
                 continue
             else:
-                break;
+                break
         ## add hook here for knowing if connection happened?
 
         if self.sock == None:
@@ -66,14 +64,14 @@ class Connection(object):
                     cert_reqs=crt_rqs,
                     certfile=self.keyfile
             )
-        
+
         self.sock.connect((self.server, self.port))
 
     def disconnect(self):
         '''  function for disconnecting from the server'''
 
         self.sock.close()
-    
+
     def reconnect(self):
         ''' function for disconnecting and reconnecting to server '''
         try:
@@ -84,7 +82,6 @@ class Connection(object):
             return False
         else:
             return True
-
 
     def write(self, data):
         ''' writes to a connected socket '''
@@ -99,13 +96,12 @@ class Connection(object):
         self.write("JOIN {}".format(channel))
 
     def part_channel(self, channel):
-        ''' parts a channel on the server ''' 
+        ''' parts a channel on the server '''
 
         self.write("PART {}".format(channel))
 
     def send_notice(self, target, message):
         ''' used to send notices '''
-
 
         self.write('NOTICE {0} :{1}'.format(target, message))
 

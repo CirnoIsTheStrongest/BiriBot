@@ -44,18 +44,18 @@ class Railgun(object):
         return last_orders
 
     def misakas(self):
-        misakas = random(1,120)
-        if misakas in range(1,5):
+        misakas = random(1, 120)
+        if misakas in range(1, 5):
             misakas = 0
-        elif misakas in range(5,40):
-            misakas = random(1,3)
-        elif misakas in range(40,70):
-            misakas = random(3,6)
+        elif misakas in range(5, 40):
+            misakas = random(1, 3)
+        elif misakas in range(40, 70):
+            misakas = random(3, 6)
         elif misakas in range(70, 100):
-            misakas = random(6,9)
-        elif misakas in range(100,115):
-            misakas = random(9,12)
-        elif misakas in range(115,121):
+            misakas = random(6, 9)
+        elif misakas in range(100, 115):
+            misakas = random(9, 12)
+        elif misakas in range(115, 121):
             misakas = 12
         return misakas
 

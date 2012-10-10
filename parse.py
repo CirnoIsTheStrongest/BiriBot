@@ -1,24 +1,24 @@
 import json
-import urllib
-import urllib2
-from xml.etree import ElementTree
 from events import MessageObj as Message
 from modules.lastfm import Last_fmWrapper
 from modules.twitter import TwitterWrapper as Twitter
 from modules.railgun import Railgun
 from modules.airing import Air
 from modules.choose import Choice
+from modules.dota2api import dota2_match_api
+from modules.twitch import Twitch_API
 
 def settings_load():
     with open('settings.json', 'rb') as f:
         return json.load(f, encoding='utf-8')
 
+
 def splitline(data):
     """ Splits the lines we got back and fixes any cut-off messages """
     lines = data.split("\r\n")
         # if the last line is not terminated buffer it
-    if lines[len(lines)-1][:-2] != "\r\n":
-        buf = lines[len(lines)-1]
+    if lines[len(lines) - 1][:-2] != "\r\n":
+        buf = lines[len(lines) - 1]
         del lines[-1:]
     return lines
 
@@ -30,7 +30,7 @@ def parse(line):
     if parts[0].startswith(':'):
         # Nick!Ident@Host
         source = parts.pop(0)[1:]
-        
+
     # command (such as PRIVMSG)
     command = parts.pop(0)
 
@@ -54,23 +54,24 @@ def parse(line):
     message = message.split(' ')
     return Message(nih_to_user(source), command, args, message)
 
+
 def nih_to_user(nih):
     """ Converts a standard Nick!Ident@Host to an User object """
     if nih is None:
         return None
-    
     identind = nih.find('!')
-    hostind  = nih.find('@')
-
     return nih[:identind]
+
 
 def command_parser(message_object, connection):
     message = message_object
     last_fm = Last_fmWrapper()
-    railgun = Railgun()
+    # railgun = Railgun()
     twitter = Twitter()
     airing = Air()
     choose = Choice()
+    dota2 = dota2_match_api()
+    twitch = Twitch_API()
 
     if message.msg[0] == '.np':
         if len(message.msg) == 1:
@@ -79,6 +80,30 @@ def command_parser(message_object, connection):
             last_fm_user = message.msg[1]
         now_playing = last_fm.get_now_playing('user.getRecentTracks', last_fm_user)
         return now_playing
+
+    elif message.msg[0] == '.steam':
+        try:
+            steam_id = message.msg[1]
+        except IndexError:
+            return 'Not enough parameters!'
+        source = message.source
+        results = dota2.register_user(source, steam_id)
+        return results
+
+    elif message.msg[0] == '.dota':
+        if len(message.msg) == 1:
+            steam_id = message.source
+        if len(message.msg) == 2:
+            steam_id = message.msg[1]
+
+        results = dota2.get_last_match(steam_id)
+        return results
+
+    elif message.msg[0] == '.streams':
+        if len(message.msg) == 1:
+            return "Invalid command, please add a stream to check."
+        else:
+            return twitch.check_streams(message.msg[1])
 
     elif message.msg[0] == '.air':
         if len(message.msg) == 1:
@@ -121,13 +146,13 @@ def command_parser(message_object, connection):
             last_fm_users = (last_fm_user_1, last_fm_user_2)
             comparison = last_fm.compare_tasteometer('tasteometer.compare', last_fm_users)
             return comparison
-    
+
     elif message.msg[0] == '.alias':
         user = message.msg[1]
         source = message.source
         results = last_fm.register_user(source, user)
         return results
-    
+
     elif message.msg[0] == '.twitnick':
         results = twitter.register_user(message.source, message.msg[1])
         return results
@@ -139,7 +164,7 @@ def command_parser(message_object, connection):
             twitter_user = message.source
         results = twitter.get_status(twitter_user)
         return results
-    
+
     elif message.msg[0] == '.tweetid':
         try:
             results = twitter.id_lookup(message.msg[1])
@@ -163,10 +188,13 @@ def command_parser(message_object, connection):
             if message.msg[0] == '.exit':
                     connection.disconnect
                     raise SystemExit
+            elif message.msg[0] == '.hdbu':
+                updating = dota2.update_hero_db()
+                return updating
             elif message.msg[0] == '.say':
                 print "{}".format(' '.join(message.msg[2:]))
                 return "{}".format(' '.join(message.msg[2:]))
-            
+
             elif message.msg[0] == '.join':
                 connection.join_channel(message.msg[1])
 
