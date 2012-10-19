@@ -41,7 +41,7 @@ class Connection(object):
             try:
                 family, socket_type, proto, cannon_name, socket_address = result
                 self.sock = socket.socket(family, socket_type, proto)
-            except socket.error, err_msg:
+            except socket.error as err_msg:
                 self.sock = None
                 continue
             else:
@@ -49,7 +49,7 @@ class Connection(object):
         ## add hook here for knowing if connection happened?
 
         if self.sock == None:
-            print 'Failed to create socket.'
+            print('Failed to create socket.')
 
         if self.ssl:
             # Find out if we want to validate the certificate or not
@@ -77,8 +77,8 @@ class Connection(object):
         try:
             self.disconnect()
             self.connect()
-        except Exception, err:
-            print err
+        except Exception as err:
+            print(err)
             return False
         else:
             return True

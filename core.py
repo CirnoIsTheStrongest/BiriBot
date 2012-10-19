@@ -22,13 +22,13 @@ try:
                 if connection.logged_in == False:
                     if message.source == "NickServ":
                         if connection.botpass != '':
-                            print 'Logging in...'
+                            print('Logging in...')
                             login = connection.identify()
                             if login == True:
                                 connection.logged_in = True
-                                print 'Login successful!'
+                                print('Login successful!')
                             elif login == False:
-                                print 'Login failed, check your password and try again.'
+                                print('Login failed, check your password and try again.')
                                 raise SystemExit
                             time.sleep(2)
                             for channel in connection.channel:

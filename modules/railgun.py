@@ -65,11 +65,11 @@ class Railgun(object):
         for item in self.prize_list:
             choice = random(1,100)
             if choice in range(1,71):
-                print locals()
+                print(locals())
                 self.prize_dict[self.user][globals()[item]] += item
                 return True
             else:
-                print locals()
+                print(locals())
                 self.prize_dict[self.user][globals()[item]] -= item
                 return False
 

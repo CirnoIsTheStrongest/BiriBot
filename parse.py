@@ -10,7 +10,7 @@ from modules.twitch import Twitch_API
 
 def settings_load():
     with open('settings.json', 'rb') as f:
-        return json.load(f, encoding='utf-8')
+        return json.load(f)
 
 
 def splitline(data):
@@ -192,7 +192,6 @@ def command_parser(message_object, connection):
                 updating = dota2.update_hero_db()
                 return updating
             elif message.msg[0] == '.say':
-                print "{}".format(' '.join(message.msg[2:]))
                 return "{}".format(' '.join(message.msg[2:]))
 
             elif message.msg[0] == '.join':
@@ -204,6 +203,6 @@ def command_parser(message_object, connection):
         elif message.source != connection.botowner:
             if message.msg[0] == '.say':
                 connection.write("PRIVMSG {} :Permission denied faggot.".format(message.source))
-                print '{0} tried and failed to abuse me with message "{1}"!'.format(message.source, ' '.join(message.msg[2:]))
+                print('{0} tried and failed to abuse me with message "{1}"!'.format(message.source, ' '.join(message.msg[2:])))
     else:
         pass

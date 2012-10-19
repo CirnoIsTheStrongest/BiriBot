@@ -7,7 +7,7 @@ port = raw_input("Port number: ")
 ssl = raw_input("Use SSL: ")
 botnick = raw_input("Nickname for the bot: ")
 botpass = raw_input("Nickserv password for the bot: ")
-channel = raw_input("List of channels to join: ")
+channel = eval(raw_input("List of channels to join: "))
 botowner = raw_input("Name of the owner of the bot: ")
 
 
@@ -24,7 +24,7 @@ else:
 settings_dict = {}
 settings_dict["server"] = server
 settings_dict["servername"] = servername
-settings_dict["port"] = port
+settings_dict["port"] = int(port)
 settings_dict["SSL"] = ssl
 settings_dict["botnick"] = botnick
 settings_dict["botpass"] = botpass

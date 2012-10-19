@@ -17,7 +17,6 @@ class Air(object):
     def lookup_show(self, show):
         query = ' '.join(show)
         anime = check_alias(query, self.user_db)
-        print anime
         lookup_re = re.compile('^' + re.escape(anime), re.I)
         eta_re = re.compile('^[0-9]{1,2}[wdhm]\s')
         data = urlopen(self.url)
@@ -28,7 +27,7 @@ class Air(object):
             show_name = shows.find_next(text=lookup_re) #Nisemonogatari
             eta = show_name.parent.find_next(text=eta_re)
             #eta = show_name.parent.find_next_siblings('td')[4]
-        except AttributeError, e:
+        except AttributeError as e:
             return 'No show by that name was found. Try http://www.mahou.org/Showtime/ for a list of shows.'
 
         if eta != None:

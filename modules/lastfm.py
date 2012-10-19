@@ -1,6 +1,5 @@
 from xml.etree import ElementTree
 import urllib
-import urllib2
 import json
 from ModuleBase import *
 
@@ -37,12 +36,12 @@ class Last_fmWrapper(object):
         self.method = method
         parameters = {'user':self.last_fm_user, 'api_key':self.last_fm_api_key, 'method':self.method}
         encoded_parameters = urllib.urlencode(parameters)
-        request = urllib2.Request(self.api_url, encoded_parameters)
+        request = urllib.Request(self.api_url, encoded_parameters)
         # httplib refuses to let me read the xml if it contains an error code
         try:
-            response = urllib2.urlopen(request)
-        except urllib2.HTTPError:
-            return 'No user with that name was found, also urllib2 sucks.'
+            response = urllib.urlopen(request)
+        except urllib.HTTPError:
+            return 'No user with that name was found, also urllib sucks.'
         verify = ElementTree.parse(response).getroot()
         user_active = verify.find('recenttracks')
         if int(user_active.attrib['total']) == 0:
@@ -67,10 +66,10 @@ class Last_fmWrapper(object):
         self.method = method
         parameters = {'type1':'user', 'type2':'user', 'value1':self.user1, 'value2':self.user2, 'api_key':self.last_fm_api_key, 'method':self.method}
         encoded_parameters = urllib.urlencode(parameters)
-        request = urllib2.Request(self.api_url, encoded_parameters)
+        request = urllib.Request(self.api_url, encoded_parameters)
         try:
             response = urllib2.urlopen(request)
-        except urllib2.HTTPError:
+        except urllib.HTTPError:
             return 'One of those users does not exist. Also, urllib2 sucks.'
         root = ElementTree.parse(response).getroot()
         compare = root.find('comparison')
