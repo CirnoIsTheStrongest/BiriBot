@@ -1,6 +1,6 @@
 from random import randint as random
 import json
-from ModuleBase import *
+from modules.ModuleBase import *
 
 class Railgun(object):
     ''' module for the .railgun counting game '''

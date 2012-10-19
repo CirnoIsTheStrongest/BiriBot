@@ -1,4 +1,4 @@
-from ModuleBase import *
+from modules.ModuleBase import *
 import requests
 import os
 

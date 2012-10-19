@@ -1,7 +1,7 @@
 from xml.etree import ElementTree
 import urllib
 import json
-from ModuleBase import *
+from modules.ModuleBase import *
 
 class Last_fmWrapper(object):
     def __init__(self):

@@ -1,7 +1,7 @@
 import urllib
 from json import JSONDecoder as Decoder
 import re
-from ModuleBase import *
+from modules.ModuleBase import *
 
 class TwitterWrapper(object):
     ''' class for interacting with twitter api'''
