@@ -10,7 +10,7 @@ from modules.twitch import Twitch_API
 
 def settings_load():
     with open('settings.json', 'rb') as f:
-        return json.load(f)
+        return json.load(f.decode('utf-8'))
 
 
 def splitline(data):
