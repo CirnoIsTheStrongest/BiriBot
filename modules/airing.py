@@ -1,4 +1,4 @@
-from urllib2 import urlopen
+from urllib.request import urlopen
 from bs4 import BeautifulSoup, UnicodeDammit
 import re
 from ModuleBase import *
