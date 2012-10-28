@@ -9,8 +9,8 @@ from modules.dota2api import dota2_match_api
 from modules.twitch import Twitch_API
 
 def settings_load():
-    with open('settings.json', 'rb') as f:
-        return json.load(f.decode('utf-8'))
+    with open('settings.json', 'r') as f:
+        return json.load(f, encoding='utf-8')
 
 
 def splitline(data):
@@ -192,6 +192,7 @@ def command_parser(message_object, connection):
                 updating = dota2.update_hero_db()
                 return updating
             elif message.msg[0] == '.say':
+                print("{}".format(' '.join(message.msg[2:])))
                 return "{}".format(' '.join(message.msg[2:]))
 
             elif message.msg[0] == '.join':

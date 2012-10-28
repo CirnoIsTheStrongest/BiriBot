@@ -1,7 +1,7 @@
-import urllib
 from json import JSONDecoder as Decoder
 import re
 from modules.ModuleBase import *
+import requests
 
 class TwitterWrapper(object):
     ''' class for interacting with twitter api'''
@@ -19,23 +19,22 @@ class TwitterWrapper(object):
 
         url_base = '/1/users/show.json'
         twitter_user = check_alias(twitter_user, self.database)
-        request_data = urllib.urlencode({
+        request_data = {
             'screen_name':twitter_user,
             'include_entities':'True'
-                })
-        request = urllib.Request('?'.join([''.join([self.api_url, url_base]), request_data]))
-        try:
-            response = urllib2.urlopen(request)
-        except urllib.HTTPError:
-            return 'User not found. Also, urllib2 sucks.'
-        response_data = response.read()
-        query_results = Decoder().decode(response_data)
-        if query_results['protected'] == True:
+                }
+        request = requests.get((self.api_url + url_base), params=request_data)
+        # try:
+        #     response = urllib2.urlopen(request)
+        # except urllib.HTTPError:
+        #     return 'User not found. Also, urllib2 sucks.'
+        response_data = request.json
+        if response_data['protected'] == True:
             return "This user's tweets are protected."
         else:
             regex = re.compile('<a href=.*?>(.*?)</a>', re.S|re.M)
             try:
-                status = query_results['status']
+                status = response_data['status']
             except KeyError:
                 return "This user has never tweeted anything."
             status_text = status['text'].encode('utf-8')
@@ -55,25 +54,25 @@ class TwitterWrapper(object):
     def id_lookup(self, tweet_id):
         ''' looks up a twitter status by status ID '''
         url_base = '/1/statuses/show.json'
-        request_data = urllib.urlencode({
+        request_data = {
             'id':tweet_id,
             'include_entities':'True'
-        })
-        request = urllib.Request('?'.join([''.join([self.api_url, url_base]), request_data]))
-        try:
-            response = urllib2.urlopen(request)
-        except urllib.HTTPError:
-            return 'Invalid tweet ID.'
-        query_results = Decoder().decode(response.read())
-        if query_results['user']['protected'] == True:
+        }
+        request = requests.get((self.api_url + url_base), params=request_data)
+        # try:
+        #     response = urllib2.urlopen(request)
+        # except urllib.HTTPError:
+        #     return 'User not found. Also, urllib2 sucks.'
+        response_data = request.json
+        if response_data['user']['protected'] == True:
             return 'The author of this tweet has protected their tweets.'
         else:
             regex = re.compile('<a href=.*?>(.*?)</a>', re.S|re.M)
-            tweet = query_results['text'].encode('utf-8')
-            twitter_user = query_results['user']['screen_name']
-            created_at = query_results['user']['created_at']
-            source = query_results['source'].encode('utf-8')
-            match = regex.match(source)
+            tweet = response_data['text'].encode('utf-8')
+            twitter_user = response_data['user']['screen_name']
+            created_at = response_data['user']['created_at']
+            source = response_data['source'].encode('utf-8')
+            match = regex.match(str(source, "utf-8"))
             print(tweet, twitter_user, created_at, source)
             if match:
                 source = match.groups()[0].strip()

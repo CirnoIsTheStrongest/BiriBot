@@ -15,6 +15,7 @@ try:
             buffer = connection.sock.read(4096)
         else:
             buffer = connection.sock.recv(4096)
+        buffer = str(buffer, "utf-8")
         lines = splitline(buffer)
         for line in lines:
             message = parse(line)
@@ -47,6 +48,6 @@ try:
 
 except Exception as error:
 
-    with open('biribot_log.log', 'wb') as f:
+    with open('biribot_log.log', 'w') as f:
         traceback.print_exc(file=f)
         raise SystemExit

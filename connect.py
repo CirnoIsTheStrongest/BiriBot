@@ -1,5 +1,4 @@
 import socket
-
 import ssl
 
 ## TODO Build a list of modules that have method message_relevance()
@@ -85,10 +84,11 @@ class Connection(object):
 
     def write(self, data):
         ''' writes to a connected socket '''
+        data = bytes(data, "utf-8")
         if self.ssl == True:
-            self.sock.write(data + "\r\n")
+            self.sock.write(data +b"\r\n")
         else:
-            self.sock.send(data + "\r\n")
+            self.sock.send(data + b"\r\n")
 
     def join_channel(self, channel):
         ''' joins a channel on the server '''

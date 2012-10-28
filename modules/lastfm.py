@@ -1,5 +1,5 @@
 from xml.etree import ElementTree
-import urllib
+import requests
 import json
 from modules.ModuleBase import *
 
@@ -34,15 +34,19 @@ class Last_fmWrapper(object):
         ''' queries the last.fm api to get the current track for a given nick '''
         last_fm_user = self.user_parsing(last_fm_user)
         self.method = method
-        parameters = {'user':self.last_fm_user, 'api_key':self.last_fm_api_key, 'method':self.method}
-        encoded_parameters = urllib.urlencode(parameters)
-        request = urllib.Request(self.api_url, encoded_parameters)
+        parameters = {
+            'user':self.last_fm_user,  
+            'api_key':self.last_fm_api_key, 
+            'method':self.method
+            }
+        request_data = requests.get(self.api_url, params=parameters)
+        xml_data = request_data.content
         # httplib refuses to let me read the xml if it contains an error code
-        try:
-            response = urllib.urlopen(request)
-        except urllib.HTTPError:
-            return 'No user with that name was found, also urllib sucks.'
-        verify = ElementTree.parse(response).getroot()
+        # try:
+        #     response = urllib.urlopen(request)
+        # except urllib.HTTPError:
+        #     return 'No user with that name was found, also urllib sucks.'
+        verify = ElementTree.fromstring(xml_data)
         user_active = verify.find('recenttracks')
         if int(user_active.attrib['total']) == 0:
             return '{} has never played any songs!'.format(self.last_fm_user)
@@ -64,14 +68,21 @@ class Last_fmWrapper(object):
         ''' queries the last.fm api to get the comparison rating for two nicks '''
         self.user1, self.user2 = self.user_parsing(last_fm_users)
         self.method = method
-        parameters = {'type1':'user', 'type2':'user', 'value1':self.user1, 'value2':self.user2, 'api_key':self.last_fm_api_key, 'method':self.method}
-        encoded_parameters = urllib.urlencode(parameters)
-        request = urllib.Request(self.api_url, encoded_parameters)
-        try:
-            response = urllib2.urlopen(request)
-        except urllib.HTTPError:
-            return 'One of those users does not exist. Also, urllib2 sucks.'
-        root = ElementTree.parse(response).getroot()
+        parameters = {
+        'type1':'user', 
+        'type2':'user', 
+        'value1':self.user1, 
+        'value2':self.user2, 
+        'api_key':self.last_fm_api_key, 
+        'method':self.method
+        }
+        request_data = requests.get(self.api_url, params=parameters)
+        xml_data = request_data.content
+        # try:
+        #     response = urllib2.urlopen(request)
+        # except urllib.HTTPError:
+        #     return 'One of those users does not exist. Also, urllib2 sucks.'
+        root = ElementTree.fromstring(xml_data)
         compare = root.find('comparison')
         result = compare.find('result')
         score = result.find('score')
