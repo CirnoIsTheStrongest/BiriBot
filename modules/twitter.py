@@ -37,9 +37,9 @@ class TwitterWrapper(object):
                 status = response_data['status']
             except KeyError:
                 return "This user has never tweeted anything."
-            status_text = status['text'].encode('utf-8')
+            status_text = status['text']
             status_time = status['created_at']
-            status_source = status['source'].encode('utf-8')
+            status_source = status['source']
             match = regex.match(status_source)
             if match:
                 status_source = match.groups()[0].strip()
@@ -68,11 +68,11 @@ class TwitterWrapper(object):
             return 'The author of this tweet has protected their tweets.'
         else:
             regex = re.compile('<a href=.*?>(.*?)</a>', re.S|re.M)
-            tweet = response_data['text'].encode('utf-8')
+            tweet = response_data['text']
             twitter_user = response_data['user']['screen_name']
             created_at = response_data['user']['created_at']
-            source = response_data['source'].encode('utf-8')
-            match = regex.match(str(source, "utf-8"))
+            source = response_data['source']
+            match = regex.match(source)
             print(tweet, twitter_user, created_at, source)
             if match:
                 source = match.groups()[0].strip()

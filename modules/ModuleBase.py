@@ -29,7 +29,6 @@ def check_alias(name, database):
 
 def register_name_(source_, name, database):
     ''' registers aliases a name to something, i.e an IRC username/anime name '''
-    name = unicode(name)
     source = source_
     database = database
 

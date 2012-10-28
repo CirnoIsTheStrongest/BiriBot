@@ -41,11 +41,6 @@ class Last_fmWrapper(object):
             }
         request_data = requests.get(self.api_url, params=parameters)
         xml_data = request_data.content
-        # httplib refuses to let me read the xml if it contains an error code
-        # try:
-        #     response = urllib.urlopen(request)
-        # except urllib.HTTPError:
-        #     return 'No user with that name was found, also urllib sucks.'
         verify = ElementTree.fromstring(xml_data)
         user_active = verify.find('recenttracks')
         if int(user_active.attrib['total']) == 0:
@@ -56,10 +51,10 @@ class Last_fmWrapper(object):
                 if track.attrib['nowplaying'] == 'true':
                     name = track.find('name')
                     song = name.text
-                    song = song.encode('utf8')
+                    song = song
                     artist_text = track.find('artist')
                     artist = artist_text.text
-                    artist = artist.encode('utf8')
+                    artist = artist
                     return '8::  {0}8 ::  Now Playing -  {1} - {2} 8 ::'.format(self.last_fm_user, song, artist)
             except KeyError:
                 return '''{} isn't playing anything right now.'''.format(self.last_fm_user)
