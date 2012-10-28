@@ -9,6 +9,13 @@ class Last_fmWrapper(object):
         self.api_url = 'http://ws.audioscrobbler.com/2.0/'
         self.database = 'users.json'
 
+    def hook(self, buffer):
+        hooks = {
+        ".np":get_now_playing(method,last_fm_user), 
+        "compare":compare_tasteometer(method, last_fm_users),
+        }
+        if hook
+
     def register_user(self, source_, user):
         user_registration = register_name_(source_, user, self.database)
         return user_registration
