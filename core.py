@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! python3
 import traceback
 from connect import Connection
 from parse import *
@@ -9,8 +9,8 @@ connection.connect()
 connection.registration()
 modules = []
 
-try:
-    while 'Caer is the embodiment of failure':
+while 'Caer is the embodiment of failure':
+    try:
         if connection.ssl == True:
             buffer = connection.sock.read(4096)
         else:
@@ -46,8 +46,8 @@ try:
         if message.type == "PING":
             connection.write("PONG {}".format(message.source))
 
-except Exception as error:
+    except Exception as error:
 
-    with open('biribot_log.log', 'w') as f:
-        traceback.print_exc(file=f)
-        raise SystemExit
+        with open('biribot_log.log', 'w') as f:
+            traceback.print_exc(file=f)
+            print(error)

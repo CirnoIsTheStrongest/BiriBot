@@ -43,11 +43,12 @@ class Last_fmWrapper(object):
         xml_data = request_data.content
         verify = ElementTree.fromstring(xml_data)
         user_active = verify.find('recenttracks')
-        if int(user_active.attrib['total']) == 0:
-            return '{} has never played any songs!'.format(self.last_fm_user)
-        else:
-            track = verify.find('.//track')
-            try:
+        try:
+            if int(user_active.attrib['total']) == 0:
+                return '{} has never played any songs!'.format(self.last_fm_user)
+            else:
+                track = verify.find('.//track')
+      
                 if track.attrib['nowplaying'] == 'true':
                     name = track.find('name')
                     song = name.text
@@ -56,8 +57,11 @@ class Last_fmWrapper(object):
                     artist = artist_text.text
                     artist = artist
                     return '8::  {0}8 ::  Now Playing -  {1} - {2} 8 ::'.format(self.last_fm_user, song, artist)
-            except KeyError:
-                return '''{} isn't playing anything right now.'''.format(self.last_fm_user)
+        except KeyError:
+            return '''{} isn't playing anything right now.'''.format(self.last_fm_user)
+
+        except AttributeError:
+            return '''{} was not found on last.fm.'''.format(self.last_fm_user)
     
     def compare_tasteometer(self, method, last_fm_users):
         ''' queries the last.fm api to get the comparison rating for two nicks '''

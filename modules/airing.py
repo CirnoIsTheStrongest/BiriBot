@@ -1,7 +1,7 @@
 from urllib.request import urlopen
 from bs4 import BeautifulSoup, UnicodeDammit
 import re
-from ModuleBase import *
+from modules.ModuleBase import *
 
 
 class Air(object):
