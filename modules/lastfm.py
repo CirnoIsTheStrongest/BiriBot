@@ -19,9 +19,6 @@ class Last_fmWrapper(object):
 
         if type(last_fm_user) is tuple:
             user1, user2 = last_fm_user
-
-            # nicknames with whitespace after break at this point
-
             user1 = check_alias(user1, self.database)
             user2 = check_alias(user2, self.database)
             return user1, user2
@@ -41,13 +38,13 @@ class Last_fmWrapper(object):
             }
         request_data = requests.get(self.api_url, params=parameters)
         xml_data = request_data.content
-        verify = ElementTree.fromstring(xml_data)
-        user_active = verify.find('recenttracks')
+        root = ElementTree.fromstring(xml_data)
+        user_active = root.find('recenttracks')
         try:
             if int(user_active.attrib['total']) == 0:
                 return '{} has never played any songs!'.format(self.last_fm_user)
             else:
-                track = verify.find('.//track')
+                track = root.find('.//track')
       
                 if track.attrib['nowplaying'] == 'true':
                     name = track.find('name')
@@ -56,12 +53,15 @@ class Last_fmWrapper(object):
                     artist_text = track.find('artist')
                     artist = artist_text.text
                     artist = artist
-                    return '8::  {0}8 ::  Now Playing -  {1} - {2} 8 ::'.format(self.last_fm_user, song, artist)
+                    return '8::  {0}8 ::  Now Playing -  {1} - {2} 8 ::'.format(
+                        self.last_fm_user, 
+                        song, artist
+                        )
         except KeyError:
-            return '''{} isn't playing anything right now.'''.format(self.last_fm_user)
+            return '{} isn\'t playing anything right now.'.format(self.last_fm_user)
 
         except AttributeError:
-            return '''{} was not found on last.fm.'''.format(self.last_fm_user)
+            return '{} was not found on last.fm.'.format(self.last_fm_user)
     
     def compare_tasteometer(self, method, last_fm_users):
         ''' queries the last.fm api to get the comparison rating for two nicks '''
@@ -77,13 +77,16 @@ class Last_fmWrapper(object):
         }
         request_data = requests.get(self.api_url, params=parameters)
         xml_data = request_data.content
-        # try:
-        #     response = urllib2.urlopen(request)
-        # except urllib.HTTPError:
-        #     return 'One of those users does not exist. Also, urllib2 sucks.'
-        root = ElementTree.fromstring(xml_data)
-        compare = root.find('comparison')
-        result = compare.find('result')
-        score = result.find('score')
-        comparison = round((float(score.text)*100), 2)
-        return '8:: {0} 8 :: {1} 8 :: Compatibility: 10{2}%8 :: '.format(self.user1, self.user2, comparison)
+        try:
+            root = ElementTree.fromstring(xml_data)
+            compare = root.find('comparison')
+            result = compare.find('result')
+            score = result.find('score')
+            comparison = round((float(score.text)*100), 2)
+            return '8:: {0} 8 :: {1} 8 :: Compatibility: 10{2}%8 :: '.format(
+                self.user1, 
+                self.user2, 
+                comparison
+                )
+        except AttributeError:
+            return 'One of these users was not found on last.fm.'

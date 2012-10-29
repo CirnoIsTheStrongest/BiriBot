@@ -1,12 +1,13 @@
 import socket
 import ssl
 
-## TODO Build a list of modules that have method message_relevance()
-## TODO if message_relevance returns true, call the method that
-## is referenced
+## TODO add hook system
 ## TODO add flood protection
 ## TODO verify login before joining channels
 ## TODO make event handler
+## TODO web based admin panel with text editor and module reloading
+## TODO add multi-server capability
+## TODO add automatic reconnect on timeout
 
 
 class Connection(object):

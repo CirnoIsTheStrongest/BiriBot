@@ -1,12 +1,16 @@
 import json
+import imp
+import sys
 from events import MessageObj as Message
-from modules.lastfm import Last_fmWrapper
-from modules.twitter import TwitterWrapper as Twitter
-from modules.railgun import Railgun
-from modules.airing import Air
-from modules.choose import Choice
-from modules.dota2api import dota2_match_api
-from modules.twitch import Twitch_API
+# from modules.lastfm import Last_fmWrapper
+from imp import reload
+import modules.lastfm
+import modules.twitter
+import modules.railgun
+import modules.airing
+import modules.choose
+import modules.dota2api
+import modules.twitch
 
 def settings_load():
     with open('settings.json', 'r') as f:
@@ -65,14 +69,22 @@ def nih_to_user(nih):
 
 def command_parser(message_object, connection):
     message = message_object
-    last_fm = Last_fmWrapper()
-    # railgun = Railgun()
-    twitter = Twitter()
-    airing = Air()
-    choose = Choice()
-    dota2 = dota2_match_api()
-    twitch = Twitch_API()
+    last_fm = modules.lastfm.Last_fmWrapper()
+    railgun = modules.railgun.Railgun()
+    twitter = modules.twitter.TwitterWrapper()
+    airing = modules.airing.Air()
+    choose = modules.choose.Choice()
+    dota2 = modules.dota2api.dota2_match_api()
+    twitch = modules.twitch.Twitch_API()
 
+
+    if message.msg[0] == '.reload':
+        if len(message.msg) == 1:
+            return "please specify a module to reload"
+        else:
+            module_object = sys.modules[message.msg[1]]
+            imp.reload(module_object)
+            return 'Reloaded {}'.format(message.msg[1])
     if message.msg[0] == '.np':
         if len(message.msg) == 1:
             last_fm_user = message.source
