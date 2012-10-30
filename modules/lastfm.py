@@ -58,7 +58,7 @@ class Last_fmWrapper(object):
                     artist_text = track.find('artist')
                     artist = artist_text.text
                     artist = artist
-                    return '8::  10{0} ::  Now Playing -  {1} - {2} 8 :: '.format(
+                    return '8::  10{0} 8::  7Now Playing - 0{1} 8::'.format(
                         self.last_fm_user, 
                         song, artist
                         )

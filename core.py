@@ -3,7 +3,12 @@ import traceback
 from connect import Connection
 from parse import *
 import time
-settings = settings_load()
+try:
+    settings = settings_load()
+except IOError:
+    print('No settings file found, please run file run_me_first.py')
+    raise SystemExit
+    
 connection = Connection(settings)
 connection.connect()
 connection.registration()

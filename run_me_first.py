@@ -11,6 +11,7 @@ settings_dict = dict(
     channel=list(map(lambda x: x.strip(), 
         input("List of channels to join: ").split(','))),
     botowner=input("Name of the owner of the bot: ")
+    quit=input("Default quit message?: ")
 )
 
 with open('settings.json', 'w') as fp:

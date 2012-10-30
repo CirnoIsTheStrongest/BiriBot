@@ -58,6 +58,10 @@ def parse(line):
     message = message.split(' ')
     return Message(nih_to_user(source), command, args, message)
 
+def repair_lines(line):
+    ''' returns a line split into a list back into a string '''
+    fixed_message = '{}'.format(' '.join(line))
+
 
 def nih_to_user(nih):
     """ Converts a standard Nick!Ident@Host to an User object """
@@ -214,15 +218,18 @@ def command_parser(message_object, connection):
     elif message.args[0] == connection.botnick:
         if message.source == connection.botowner:
             if message.msg[0] == '.exit':
-                    connection.disconnect
-                    raise SystemExit
+                try:
+                    connection.quit_message('{}'.format(' '.join(message.msg[2:])))
+                except IndexError:
+                    connection.private_message(message.source, 'No error message specified, using default if exists..')
+                connection.disconnect
+                raise SystemExit
             elif message.msg[0] == '.hdbu':
                 updating = dota2.update_hero_db()
                 return updating
 
             elif message.msg[0] == '.say':
-                print("{}".format(' '.join(message.msg[2:])))
-                return "{}".format(' '.join(message.msg[2:]))
+                return connection.private_message(message.msg[1], '{}'.format(' '.join(message.msg[2:])))
 
             elif message.msg[0] == '.join':
                 connection.join_channel(message.msg[1])
@@ -232,7 +239,7 @@ def command_parser(message_object, connection):
 
         elif message.source != connection.botowner:
             if message.msg[0] == '.say':
-                connection.write("PRIVMSG {} :Permission denied faggot.".format(message.source))
+                connection.write("PRIVMSG {} :Permission denied faggot.".format(message.args[0]))
                 print('{0} tried and failed to abuse me with message "{1}"!'.format(message.source, ' '.join(message.msg[2:])))
     else:
         pass

@@ -8,7 +8,7 @@ import ssl
 ## TODO web based admin panel with text editor and module reloading
 ## TODO add multi-server capability
 ## TODO add automatic reconnect on timeout
-
+## add check for existence of settings file
 
 class Connection(object):
     ''' Core class, connects to server.'''
@@ -22,6 +22,7 @@ class Connection(object):
         self.botowner = settings['botowner']
         self.channel = settings['channel']
         self.ssl = settings['SSL']
+        self.quit = settings['quit']
         self.logged_in = False
         self.validate = False
         self.ca = None
@@ -90,6 +91,22 @@ class Connection(object):
             self.sock.write(data +b"\r\n")
         else:
             self.sock.send(data + b"\r\n")
+
+    def private_message(self, target, message):
+        ''' sends a private message to a given user '''
+        self.write('PRIVMSG {0} :{1}'.format(target, message))
+
+    def quit_message(self, message):
+        print(message)
+        if message == None:
+            try:
+                message = self.quit
+            except KeyError:
+                self.private_message(message.source, 'No quit message found, exiting without quit message')
+        else:
+            quit_message = message
+
+        self.write("QUIT :{}".format(quit_message))
 
     def join_channel(self, channel):
         ''' joins a channel on the server '''
