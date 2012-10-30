@@ -78,13 +78,7 @@ def command_parser(message_object, connection):
     twitch = modules.twitch.Twitch_API()
 
 
-    if message.msg[0] == '.reload':
-        if len(message.msg) == 1:
-            return "please specify a module to reload"
-        else:
-            module_object = sys.modules[message.msg[1]]
-            imp.reload(module_object)
-            return 'Reloaded {}'.format(message.msg[1])
+
     if message.msg[0] == '.np':
         if len(message.msg) == 1:
             last_fm_user = message.source
@@ -92,6 +86,28 @@ def command_parser(message_object, connection):
             last_fm_user = message.msg[1]
         now_playing = last_fm.get_now_playing('user.getRecentTracks', last_fm_user)
         return now_playing
+
+    elif message.msg[0] == '.reload':
+        if message.source == connection.botowner:
+            if len(message.msg) == 1:
+                return "please specify a module to reload"
+            else:
+                try:
+                    module_object = sys.modules[message.msg[1]]
+                except KeyError:
+                    return 'This module isn\'t currently loaded'
+                imp.reload(module_object)
+                return 'Reloaded {}'.format(message.msg[1])
+        else:
+            return 'You are not allowed to use that command.'
+
+    elif message.msg[0] == '.delnp':
+        if len(message.msg) == 1:
+            last_fm_user = message.source
+        else:
+            last_fm_user = message.msg[1]
+        delete_np_user = last_fm.del_user(last_fm_user)
+        return delete_np_user
 
     elif message.msg[0] == '.steam':
         try:
@@ -184,13 +200,13 @@ def command_parser(message_object, connection):
             return 'Not enough arguments, please add a twitter id.'
         return results
 
-    # elif message.msg[0] == '.test':
-    #     try:
-    #         rail_user = message.msg[1]
-    #     except IndexError:
-    #         rail_user = message.source
-    #     results = railgun.get_prizes(rail_user)
-    #     return results
+    elif message.msg[0] == '.railgun':
+        try:
+            rail_user = message.msg[1]
+        except IndexError:
+            rail_user = message.source
+        results = railgun.get_prizes(rail_user)
+        return results
 
     elif message.msg[0] == '.stats':
         stats = 'Channel stats available here: http://www.chalamius.se/ircstats/biribiri.html'
@@ -203,6 +219,7 @@ def command_parser(message_object, connection):
             elif message.msg[0] == '.hdbu':
                 updating = dota2.update_hero_db()
                 return updating
+
             elif message.msg[0] == '.say':
                 print("{}".format(' '.join(message.msg[2:])))
                 return "{}".format(' '.join(message.msg[2:]))

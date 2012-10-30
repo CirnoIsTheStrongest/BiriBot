@@ -26,6 +26,16 @@ def check_alias(name, database):
             return key
     return name
 
+def remove_entry(name, database):
+    try:
+        names = open_name_database(database)
+    except IOError:
+        return name
+    if name in names:
+        names.pop(name)
+        save_names_database(names, database)
+        return "{} was removed from the database!".format(name)
+
 
 def register_name_(source_, name, database):
     ''' registers aliases a name to something, i.e an IRC username/anime name '''

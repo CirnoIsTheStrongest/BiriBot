@@ -27,6 +27,11 @@ class Last_fmWrapper(object):
             return self.last_fm_user
 
 
+    def del_user(self, last_fm_user):
+        delete_user = remove_entry(last_fm_user, self.database)
+        return  delete_user
+
+
     def get_now_playing(self, method, last_fm_user):
         ''' queries the last.fm api to get the current track for a given nick '''
         last_fm_user = self.user_parsing(last_fm_user)
@@ -53,7 +58,7 @@ class Last_fmWrapper(object):
                     artist_text = track.find('artist')
                     artist = artist_text.text
                     artist = artist
-                    return '8::  {0}8 ::  Now Playing -  {1} - {2} 8 ::'.format(
+                    return '8::  10{0} ::  Now Playing -  {1} - {2} 8 :: '.format(
                         self.last_fm_user, 
                         song, artist
                         )
