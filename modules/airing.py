@@ -26,7 +26,6 @@ class Air(object):
             shows = soup.find('table', attrs={'summary' : 'Currently Airing'}) #.find_next('table', {'summary': ''}).next_element
             show_name = shows.find_next(text=lookup_re) #Nisemonogatari
             eta = show_name.parent.find_next(text=eta_re)
-            #eta = show_name.parent.find_next_siblings('td')[4]
         except AttributeError as e:
             return 'No show by that name was found. Try http://www.mahou.org/Showtime/ for a list of shows.'
 
