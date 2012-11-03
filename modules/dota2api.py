@@ -21,7 +21,6 @@ class dota2_match_api(object):
             'language': 'english',
             'key': self.steam_api_key
         }
-
         request_data = requests.get(self.api_heroes_url, params=api_args)
         raw_hero_data = request_data.json
         hero_dict = {}

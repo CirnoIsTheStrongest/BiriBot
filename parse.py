@@ -1,8 +1,7 @@
 import json
 import sys
 from events import MessageObj as Message
-# from modules.lastfm import Last_fmWrapper
-import imp
+import os
 import modules.lastfm
 import modules.twitter
 import modules.railgun
@@ -63,6 +62,25 @@ def repair_lines(line):
     fixed_message = '{}'.format(' '.join(line))
 
 
+def get_module_paths():
+    path = os.path.join(os.path.dirname(__file__), 'modules')
+    file_names = os.walk(path, topdown=True)
+    path_list = []
+    for root, subfolders, paths in file_names:
+        for item in paths:
+            if item.endswith('.py'):
+                path_list.append(os.path.join(root, item))
+    return path_list
+
+def get_module_objects():
+    path_list = get_module_paths()
+    module_objects = {}
+    for _file in path_list:
+        _filename = os.path.basename(_file[:-3])
+        module_objects[_file] = sys.modules['modules.{}'.format(_filename)]
+    return module_objects
+
+
 def nih_to_user(nih):
     """ Converts a standard Nick!Ident@Host to an User object """
     if nih is None:
@@ -91,20 +109,6 @@ def command_parser(message_object, connection):
             last_fm_user = message.msg[1]
         now_playing = last_fm.get_now_playing('user.getRecentTracks', last_fm_user)
         return now_playing
-
-    elif message.msg[0] == '.reload':
-        if message.source == connection.botowner:
-            if len(message.msg) == 1:
-                return "please specify a module to reload"
-            else:
-                try:
-                    module_object = sys.modules[message.msg[1]]
-                except KeyError:
-                    return 'This module isn\'t currently loaded'
-                imp.reload(module_object)
-                return 'Reloaded {}'.format(message.msg[1])
-        else:
-            return 'You are not allowed to use that command.'
 
     elif message.msg[0] == '.delnp':
         if len(message.msg) == 1:

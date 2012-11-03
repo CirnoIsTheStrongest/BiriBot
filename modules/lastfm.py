@@ -10,9 +10,11 @@ class Last_fmWrapper(object):
         self.api_url = 'http://ws.audioscrobbler.com/2.0/'
         self.database = 'users.json'
 
+
     def register_user(self, source_, user):
         user_registration = register_name_(source_, user, self.database)
         return user_registration
+
 
     def user_parsing(self, last_fm_user):
         ''' expands tuple to be used in nick_alias '''
@@ -31,7 +33,6 @@ class Last_fmWrapper(object):
     def del_user(self, last_fm_user):
         delete_user = remove_entry(last_fm_user, self.database)
         return  delete_user
-
 
     def get_now_playing(self, method, last_fm_user):
         ''' queries the last.fm api to get the current track for a given nick '''
@@ -69,6 +70,7 @@ class Last_fmWrapper(object):
         except AttributeError:
             return '{} was not found on last.fm.'.format(self.last_fm_user)
     
+
     def compare_tasteometer(self, method, last_fm_users):
         ''' queries the last.fm api to get the comparison rating for two nicks '''
         self.user1, self.user2 = self.user_parsing(last_fm_users)

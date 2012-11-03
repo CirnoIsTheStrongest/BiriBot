@@ -41,6 +41,7 @@ class TwitterWrapper(object):
                 status_time = status['created_at']
                 status_source = status['source']
                 match = regex.match(status_source)
+                
                 if match:
                     status_source = match.groups()[0].strip()
                 return "8:: {0}8 :: {1} 8:: Tweet: 10{2}8 ::  {3} 8 ::  ".format(

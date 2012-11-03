@@ -21,7 +21,6 @@ class Air(object):
         eta_re = re.compile('^[0-9]{1,2}[wdhm]\s')
         data = urlopen(self.url)
         soup = BeautifulSoup(data.read())
-
         try:
             shows = soup.find('table', attrs={'summary' : 'Currently Airing'}) #.find_next('table', {'summary': ''}).next_element
             show_name = shows.find_next(text=lookup_re) #Nisemonogatari
