@@ -1,9 +1,8 @@
 import json
-import imp
 import sys
 from events import MessageObj as Message
 # from modules.lastfm import Last_fmWrapper
-from imp import reload
+import imp
 import modules.lastfm
 import modules.twitter
 import modules.railgun
@@ -11,6 +10,7 @@ import modules.airing
 import modules.choose
 import modules.dota2api
 import modules.twitch
+import modules.track
 
 def settings_load():
     with open('settings.json', 'r') as f:
@@ -80,6 +80,7 @@ def command_parser(message_object, connection):
     choose = modules.choose.Choice()
     dota2 = modules.dota2api.dota2_match_api()
     twitch = modules.twitch.Twitch_API()
+    track = modules.track.TrackPackages()
 
 
 
@@ -196,6 +197,14 @@ def command_parser(message_object, connection):
             twitter_user = message.source
         results = twitter.get_status(twitter_user)
         return results
+
+    elif message.msg[0] == '.track':
+        try:
+            tracking_number = message.msg[1]
+            return track.track_package(tracking_number)
+        except IndexError:
+            return 'Please specify a tracking number.'
+
 
     elif message.msg[0] == '.tweetid':
         try:

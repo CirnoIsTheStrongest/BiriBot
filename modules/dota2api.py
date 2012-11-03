@@ -72,13 +72,13 @@ class dota2_match_api(object):
                     match_details = player
                     if match_details['player_slot'] in range(-1,10):
                         player_team = 'Radiant'
-                        if radiant_victory == True:
+                        if radiant_victory:
                             match_details['win'] = 'won'
                         else:
                             match_details['win'] = 'lost'
                     else:
                         player_team = 'Dire'
-                        if radiant_victory == True:
+                        if radiant_victory:
                             match_details['win'] = 'lost'
                         else:
                             match_details['win'] = 'won'

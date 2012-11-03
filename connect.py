@@ -9,6 +9,7 @@ import ssl
 ## TODO add multi-server capability
 ## TODO add automatic reconnect on timeout
 ## add check for existence of settings file
+## whitespace fix (leading whitespace)
 
 class Connection(object):
     ''' Core class, connects to server.'''

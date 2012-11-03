@@ -3,18 +3,19 @@ import traceback
 from connect import Connection
 from parse import *
 import time
+
 try:
     settings = settings_load()
 except IOError:
     print('No settings file found, please run file run_me_first.py')
     raise SystemExit
-    
+
 connection = Connection(settings)
 connection.connect()
 connection.registration()
 modules = []
 
-while 'Caer is the embodiment of failure':
+while True:
     try:
         if connection.ssl == True:
             buffer = connection.sock.read(4096)
@@ -56,3 +57,18 @@ while 'Caer is the embodiment of failure':
         with open('biribot_log.log', 'w') as f:
             traceback.print_exc(file=f)
             print(error)
+
+# import time
+# import os.path as path
+# import imp
+# import sys
+
+# timestamp = time.time(path.getpathmtime(_module))
+# module_list = [] # fill this later with module objects
+# while True:
+#     for _module in list:
+#         if timestamp != time.time(path.getpathmtime(_module))
+#             timestamp = time.time(path.getpathmtime(_module))
+#             imp.reload(_module)
+#             connection.private_message(connection.botowner,
+#              '{} has been modified and is being reloaded.'.format(_module))
