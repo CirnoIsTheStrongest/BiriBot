@@ -1,4 +1,4 @@
-from urllib.request import urlopen
+import requests
 from bs4 import BeautifulSoup, UnicodeDammit
 import re
 from modules.ModuleBase import *
@@ -19,8 +19,8 @@ class Air(object):
         anime = check_alias(query, self.user_db)
         lookup_re = re.compile('^' + re.escape(anime), re.I)
         eta_re = re.compile('^[0-9]{1,2}[wdhm]\s')
-        data = urlopen(self.url)
-        soup = BeautifulSoup(data.read())
+        data = requests.get(self.url)
+        soup = BeautifulSoup(data.text)
         try:
             shows = soup.find('table', attrs={'summary' : 'Currently Airing'}) #.find_next('table', {'summary': ''}).next_element
             show_name = shows.find_next(text=lookup_re) #Nisemonogatari

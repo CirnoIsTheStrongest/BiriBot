@@ -93,7 +93,7 @@ class Connection(object):
         else:
             self.sock.send(data + b"\r\n")
 
-    def private_message(self, target, message):
+    def privmsg(self, target, message):
         ''' sends a private message to a given user '''
         self.write('PRIVMSG {0} :{1}'.format(target, message))
 
@@ -103,7 +103,7 @@ class Connection(object):
             try:
                 message = self.quit
             except KeyError:
-                self.private_message(message.source, 'No quit message found, exiting without quit message')
+                self.privmsg(message.source, 'No quit message found, exiting without quit message')
         else:
             quit_message = message
 

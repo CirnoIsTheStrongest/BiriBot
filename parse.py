@@ -2,6 +2,7 @@ import json
 import sys
 from events import MessageObj as Message
 import os
+import imp
 import modules.lastfm
 import modules.twitter
 import modules.railgun
@@ -77,8 +78,17 @@ def get_module_objects():
     module_objects = {}
     for _file in path_list:
         _filename = os.path.basename(_file[:-3])
-        module_objects[_file] = sys.modules['modules.{}'.format(_filename)]
+        try:
+            module_objects[_file] = sys.modules['modules.{}'.format(_filename)]
+        except KeyError:
+            return '{} isn\'t currently loaded'.format(_filename)
     return module_objects
+
+# paths = get_module_paths()
+# module_names = {}
+
+# for name in paths:
+#     imp.findmodule(os.path.basename(name)[:-3], name)
 
 
 def nih_to_user(nih):
@@ -234,15 +244,15 @@ def command_parser(message_object, connection):
                 try:
                     connection.quit_message('{}'.format(' '.join(message.msg[2:])))
                 except IndexError:
-                    connection.private_message(message.source, 'No error message specified, using default if exists..')
+                    connection.privmsg(message.source, 'No error message specified, using default if exists..')
                 connection.disconnect
                 raise SystemExit
             elif message.msg[0] == '.hdbu':
                 updating = dota2.update_hero_db()
-                return updating
+                connection.privmsg(message.source, 'Updating hero db...')
 
             elif message.msg[0] == '.say':
-                return connection.private_message(message.msg[1], '{}'.format(' '.join(message.msg[2:])))
+                return connection.privmsg(message.msg[1], '{}'.format(' '.join(message.msg[2:])))
 
             elif message.msg[0] == '.join':
                 connection.join_channel(message.msg[1])

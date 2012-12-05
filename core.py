@@ -4,8 +4,6 @@ from connect import Connection
 from parse import *
 import time
 import select
-import os
-import imp
 
 try:
     settings = settings_load()
@@ -64,17 +62,13 @@ while True:
         elif not ready[0]:
             for item in module_dict:
                 if timestamps[item] != time.ctime(os.path.getmtime(item)):
-                    print(timestamps[item] + ' this is the first timestamp')
                     timestamps[item] = time.ctime(os.path.getmtime(item))
-                    print(timestamps[item] + ' this is the second timestamp')
                     imp.reload(module_dict[item])
-                    print('{} is being reloaded.'.format(os.path.basename(item)))
-                    connection.private_message(connection.botowner,
+                    connection.privmsg(connection.botowner,
                      '{} has been modified and is being reloaded.'.format(item))
-
     except Exception as error:
 
-        with open('biribot_log.log', 'w') as f:
+        with open('error.log', 'w') as f:
             traceback.print_exc(file=f)
             print(error)
 
