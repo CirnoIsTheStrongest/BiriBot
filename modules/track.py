@@ -2,6 +2,9 @@ import requests
 from xml.etree import ElementTree
 import re
 
+# EG200546216JP
+# http://www.packagetrackr.com/track/550487484564
+
 class TrackPackages():
 	def __init__(self):
 		self.base_url = 'http://www.boxoh.com/?rss=1&t=+'

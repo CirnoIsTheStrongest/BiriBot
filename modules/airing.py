@@ -29,6 +29,6 @@ class Air(object):
             return 'No show by that name was found. Try http://www.mahou.org/Showtime/ for a list of shows.'
 
         if eta != None:
-            return '{0} will air in {1}'.format(anime, eta)
+            return '{0} will air in {1}'.format(show_name, eta)
         else:
             return 'No eta found for {}'.format(anime)

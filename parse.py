@@ -11,6 +11,7 @@ import modules.choose
 import modules.dota2api
 import modules.twitch
 import modules.track
+import modules.mpc
 
 def settings_load():
     with open('settings.json', 'r') as f:
@@ -55,6 +56,7 @@ def parse(line):
             args.append(parts.pop(0))
 
     # Return the message object
+    message = message.strip()
     message = message.split(' ')
     return Message(nih_to_user(source), command, args, message)
 
@@ -112,7 +114,7 @@ def command_parser(message_object, connection):
 
 
 
-    if message.msg[0] == '.np':
+    if message.msg[0].strip() == '.np':
         if len(message.msg) == 1:
             last_fm_user = message.source
         else:
@@ -127,6 +129,10 @@ def command_parser(message_object, connection):
             last_fm_user = message.msg[1]
         delete_np_user = last_fm.del_user(last_fm_user)
         return delete_np_user
+    elif message.msg[0] == '.nw':
+        now_watching = modules.mpc.return_now_watching()
+        return now_watching
+
 
     elif message.msg[0] == '.steam':
         try:
@@ -176,7 +182,7 @@ def command_parser(message_object, connection):
         else:
             return "I choose: {}".format(choose.choice(message.msg[1:]))
 
-    elif message.msg[0] == '.compare':
+    elif message.msg[0].strip() == '.compare':
         try:
             if len(message.msg) == 2:
                 last_fm_user_1 = message.source

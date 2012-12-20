@@ -64,8 +64,11 @@ while True:
                 if timestamps[item] != time.ctime(os.path.getmtime(item)):
                     timestamps[item] = time.ctime(os.path.getmtime(item))
                     imp.reload(module_dict[item])
-                    connection.privmsg(connection.botowner,
-                     '{} has been modified and is being reloaded.'.format(item))
+                    connection.privmsg(
+                        connection.botowner,
+                        '{} has been modified and is being reloaded.'.format(
+                            os.path.basename(item))
+                     )
     except Exception as error:
 
         with open('error.log', 'w') as f:
