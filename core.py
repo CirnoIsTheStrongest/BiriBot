@@ -53,7 +53,11 @@ while True:
                 if message.type == "PRIVMSG":
                     module_results = command_parser(message, connection)
                     if module_results != None:
-                        connection.write('PRIVMSG {0} :{1}'.format(message.args[0], module_results))
+                        if message.args[0] == connection.botnick:
+                            result_endpoint = message.source
+                        else:
+                            result_endpoint = message.args[0]
+                        connection.write('PRIVMSG {0} :{1}'.format(result_endpoint, module_results))
                     else:
                         pass
             if message.type == "PING":

@@ -169,9 +169,9 @@ def command_parser(message_object, connection):
             return "Not enough paramters, please add a show to alias."
 
         new_message = ' '.join(message.msg[1:])
-        new_message = new_message.split('|')
-        anime = new_message[0].rstrip()
-        alias = new_message[1].lstrip()
+        new_message = new_message.split('|s')
+        anime = new_message[0]
+        alias = new_message[1]
         results = airing.alias_anime(alias, anime)
         return  results
 
